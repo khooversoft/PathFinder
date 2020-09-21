@@ -37,16 +37,13 @@ namespace PathFinderApi
             services.AddControllers();
 
             services.AddSingleton<IJson, Json>();
-
             services.AddSingleton<IPathFinderStore, CosmosPathFinderStore>();
 
+            // Register path services actor host (bind DI to actor)
             services.AddPathServiceActorHost();
-            services.AddPathServices();
-            //services.AddSingleton<ILinkPathService, LinkPathService>();
-            //services.AddSingleton<IMetadataPathService, MetadataPathService>();
 
-            //services.AddSingleton<ILinkRecordActor, LinkRecordActor>();
-            //services.AddSingleton<IMetadataRecordActor, MetadataRecordActor>();
+            // Register path services (link & metadata)
+            services.AddPathServices();
 
             services.AddSingleton<IRecordContainer<LinkRecord>>(services =>
             {

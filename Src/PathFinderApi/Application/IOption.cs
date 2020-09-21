@@ -1,4 +1,5 @@
 ﻿using PathFinder.Cosmos.Store.Application;
+using PathFinder.sdk.Application;
 using PathFinder.sdk.Models;
 using Toolbox.Services;
 
@@ -8,11 +9,12 @@ namespace PathFinderApi.Application
     {
         string? ConfigFile { get; }
         string? ContinuationHost { get; }
-        KeyVaultOption KeyVault { get; }
         string? LogFolder { get; }
-        IPropertyResolver PropertyResolver { get; }
-        ISecretFilter SecretFilter { get; }
+        string[]? ApplicationUrl { get; }
         string? SecretId { get; }
+        string Environment { get; }
+        RunEnvironment RunEnvironment { get; }
+        bool InitializeDatabase { get; }
         CosmosPathFinderOption Store { get; }
     }
 }

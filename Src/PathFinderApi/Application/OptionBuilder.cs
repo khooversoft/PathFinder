@@ -10,6 +10,9 @@ using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
 using PathFinderApi.Application;
+using System.Reflection;
+using PathFinder.sdk.Application;
+using System.Runtime.CompilerServices;
 
 namespace PathFinderApi.Application
 {
@@ -48,8 +51,7 @@ namespace PathFinderApi.Application
 
             string? configFile = null;
             string? secretId = null;
-            string? accountKey = null;
-            Option? option = null!;
+            Option option = new Option();
 
             // Because ordering or placement on critical configuration can different, loop through a process
             // of building the correct configuration.  Pattern cases below are in priority order.
@@ -57,9 +59,10 @@ namespace PathFinderApi.Application
             {
                 option = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
+                    .Func(x => GetEnvironmentConfig(option) switch { Stream v => x.AddJsonStream(v), _ => x })
                     .Func(x => configFile.ToNullIfEmpty() switch { string v => x.AddJsonFile(configFile), _ => x })
                     .Func(x => secretId.ToNullIfEmpty() switch { string v => x.AddUserSecrets(v), _ => x })
-                    .AddCommandLine(args.Concat(accountKey switch { string v => new[] { createAccountKeyCommand(accountKey) }, _ => Enumerable.Empty<string>() }).ToArray())
+                    .AddCommandLine(args)
                     .Build()
                     .Bind<Option>();
 
@@ -72,49 +75,28 @@ namespace PathFinderApi.Application
                     case Option v when v.SecretId.ToNullIfEmpty() != null && secretId == null:
                         secretId = v.SecretId;
                         continue;
-
-                    case Option v when option.KeyVault?.KeyVaultName.IsEmpty() == true && v.Store?.AccountKey.IsEmpty() == false && accountKey == null:
-                        accountKey = GetAccountKeyFromKeyVault(option);
-                        if (accountKey != null) continue;
-                        continue;
                 }
 
                 break;
             };
 
-            if (!option.Store?.AccountKey.IsEmpty() == false)
-            {
-                option.SecretFilter = new SecretFilter(new[] { option.Store?.AccountKey! });
-            }
-
             option.Verify();
+            option.RunEnvironment = option.Environment.ConvertToEnvironment();
 
             return option;
-
-            static string createAccountKeyCommand(string value) => $"{nameof(option.Store)}:{nameof(option.Store.AccountKey)}=" + value.VerifyNotEmpty(nameof(value));
         }
 
-        private string GetAccountKeyFromKeyVault(Option option)
+        private Stream? GetEnvironmentConfig(Option option)
         {
-            try
-            {
-                Console.WriteLine("Getting secret from Key Vault");
-                option.KeyVault!.Verify();
+            if (option?.Environment?.ToNullIfEmpty() == null) return null;
 
-                var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(new AzureServiceTokenProvider().KeyVaultTokenCallback));
+            string resourceId = option.Environment
+                .ConvertToEnvironment()
+                .ConvertToResourceId();
 
-                IConfiguration configuration = new ConfigurationBuilder()
-                    .AddAzureKeyVault($"https://{option.KeyVault!.KeyVaultName}.vault.azure.net/", keyVaultClient, new DefaultKeyVaultSecretManager())
-                    .Build();
-
-                return configuration[option.KeyVault!.KeyName];
-            }
-            catch
-            {
-                Console.WriteLine("Failed to get key from key vault");
-                option.DumpConfigurations();
-                throw;
-            }
+            return Assembly.GetAssembly(typeof(OptionBuilder))
+                !.GetManifestResourceStream(resourceId)
+                .VerifyNotNull($"{resourceId} not found");
         }
     }
 }

@@ -36,7 +36,6 @@ namespace PathFinder.Cosmos.Store
             _logger = logger;
         }
 
-
         public string ContainerName => _container.Id;
 
         public Task<ETag> Set(T item, CancellationToken token = default) => Set(new Record<T>(item));

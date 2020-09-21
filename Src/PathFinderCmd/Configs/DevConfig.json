@@ -2,7 +2,7 @@
   "SecretId": "PathFinderCmd",
 
   "Store": {
-    "ConnectionString": "AccountEndpoint=https://watcher-test.documents.azure.com:443/;AccountKey={AccountKey};",
+    "ConnectionString": "AccountEndpoint=https://path-finder-test.documents.azure.com:443/;AccountKey={AccountKey};",
     "AccountKey": "{from secret}",
     "TraceTraceTTL": "00:10:00",
     "DatabaseName": "dev.pathFinder",

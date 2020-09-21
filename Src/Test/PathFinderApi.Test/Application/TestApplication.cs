@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PathFinderApi.Test.Application
 {
-    public class TestApplication : IDisposable
+    public class TestApplication
     {
         private static TestWebsiteHost? _currentHost;
         private static object _lock = new object();
@@ -18,7 +18,5 @@ namespace PathFinderApi.Test.Application
                 return _currentHost = _currentHost ?? new TestWebsiteHost().StartApiServer();
             }
         }
-
-        public void Dispose() => Interlocked.Exchange(ref _currentHost, null!)?.Shutdown();
     }
 }

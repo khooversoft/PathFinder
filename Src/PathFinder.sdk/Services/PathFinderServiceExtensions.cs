@@ -29,15 +29,15 @@ namespace PathFinder.sdk.Services
         {
             services.VerifyNotNull(nameof(services));
 
-            services.AddSingleton(x =>
-            {
-                ILoggerFactory loggerFactory = x.GetRequiredService<ILoggerFactory>();
+            services.AddSingleton<IActorHost>(x =>
+           {
+               ILoggerFactory loggerFactory = x.GetRequiredService<ILoggerFactory>();
 
-                IActorHost host = new ActorHost(capacity, loggerFactory);
-                host.AddPathServiceActors(x);
+               IActorHost host = new ActorHost(capacity, loggerFactory);
+               host.AddPathServiceActors(x);
 
-                return host;
-            });
+               return host;
+           });
 
             return services;
         }
@@ -49,8 +49,8 @@ namespace PathFinder.sdk.Services
             services.AddSingleton<ILinkPathService, LinkPathService>();
             services.AddSingleton<IMetadataPathService, MetadataPathService>();
 
-            services.AddSingleton<ILinkRecordActor, LinkRecordActor>();
-            services.AddSingleton<IMetadataRecordActor, MetadataRecordActor>();
+            services.AddTransient<ILinkRecordActor, LinkRecordActor>();
+            services.AddTransient<IMetadataRecordActor, MetadataRecordActor>();
 
             return services;
         }

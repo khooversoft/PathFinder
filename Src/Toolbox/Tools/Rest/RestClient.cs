@@ -241,7 +241,8 @@ namespace Toolbox.Tools.Rest
         /// <returns>HTTP request message</returns>
         private HttpRequestMessage BuildRequestMessage(HttpMethod method)
         {
-            var builder = BaseAddress != null ? new UriBuilder(BaseAddress) : new UriBuilder();
+            var baseAddress = BaseAddress ?? _client.BaseAddress;
+            var builder = baseAddress != null ? new UriBuilder(baseAddress) : new UriBuilder();
 
             builder.Path = (builder.Path?.Split("/", StringSplitOptions.RemoveEmptyEntries) ?? new string[0])
                 .Concat(PathItems)

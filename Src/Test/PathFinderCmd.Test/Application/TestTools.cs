@@ -22,7 +22,7 @@ namespace PathFinderCmd.Test.Application
         {
             IConfiguration config = new ConfigurationBuilder()
                 .AddJsonStream(configStream)
-                .AddUserSecrets("PathFinderCmd.Test")
+                .AddUserSecrets("PathFinderCmd")
                 .AddCommandLine(args.Select(x => x.Split('=', StringSplitOptions.RemoveEmptyEntries).Length == 1 ? x += "=true" : x).ToArray())
                 .Build();
 

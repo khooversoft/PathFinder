@@ -26,7 +26,7 @@ namespace PathFinderApi.Test
         {
             TestWebsiteHost host = _testApplication.GetHost();
 
-            const string id = "lnk0001";
+            const string id = "relnk0001";
             const string redirectUrl = "http://localhost:5003/Document";
 
             var record = new LinkRecord

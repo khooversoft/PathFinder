@@ -22,8 +22,8 @@ namespace PathFinder.sdk.Client
             _logger = loggerFactory.CreateLogger<PathFinderClient>();
 
             _restClient = new RestClient(httpClient, loggerFactory.CreateLogger<RestClient>(), json);
-            Link = new LinkClient(_restClient);
-            Metadata = new MetadataClient(_restClient);
+            Link = new LinkClient(_restClient, _logger);
+            Metadata = new MetadataClient(_restClient, _logger);
         }
 
         public LinkClient Link { get; }

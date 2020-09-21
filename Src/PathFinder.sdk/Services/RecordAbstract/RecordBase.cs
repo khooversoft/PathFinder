@@ -11,5 +11,7 @@ namespace PathFinder.sdk.Services.RecordAbstract
         protected RecordBase(string recordType) => RecordType = recordType;
 
         public string RecordType { get; set; }
+
+        public IDictionary<string, string> Tags { get; set; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     }
 }
