@@ -1,25 +1,24 @@
 ﻿using Microsoft.Extensions.Logging;
 using PathFinder.sdk.Models;
 using PathFinder.sdk.Records;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Net.Mail;
 using System.Threading;
 using System.Threading.Tasks;
 using Toolbox.Tools;
-using Toolbox.Tools.Rest;
 
 namespace PathFinder.sdk.Client
 {
     public class LinkClient
     {
-        private readonly RestClient _restClient;
+        private readonly HttpClient _httpClient;
         private readonly ILogger _logger;
 
-        public LinkClient(RestClient restClient, ILogger logger)
+        public LinkClient(HttpClient httpClient, ILogger logger)
         {
-            _restClient = restClient;
+            _httpClient = httpClient;
             _logger = logger;
         }
 
@@ -28,12 +27,15 @@ namespace PathFinder.sdk.Client
             id.VerifyNotEmpty(nameof(id));
             _logger.LogTrace($"{nameof(Get)}: Id={id}");
 
-            return await _restClient
-                .AddPath($"api/link/{id}")
-                .SetEnsureSuccessStatusCode()
-                .SetValidHttpStatusCodes(HttpStatusCode.NotFound)
-                .GetAsync(token)
-                .GetContentAsync<LinkRecord?>();
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<LinkRecord?>($"api/link/{id}", token);
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, $"{nameof(Get)}: id={id} failed");
+                return null;
+            }
         }
 
         public async Task Set(LinkRecord linkRecord, CancellationToken token = default)
@@ -44,11 +46,7 @@ namespace PathFinder.sdk.Client
                 .VerifyNotNull(nameof(linkRecord))
                 .Prepare();
 
-            await _restClient
-                .AddPath($"api/link")
-                .SetContent(linkRecord)
-                .SetEnsureSuccessStatusCode()
-                .PostAsync(token);
+            await _httpClient.PostAsJsonAsync("api/link", linkRecord, token);
         }
 
         public async Task Delete(string id, CancellationToken token = default)
@@ -56,21 +54,15 @@ namespace PathFinder.sdk.Client
             id.VerifyNotEmpty(nameof(id));
             _logger.LogTrace($"{nameof(Delete)}: Id={id}");
 
-            await _restClient
-                .AddPath($"api/link/{id}")
-                .SetEnsureSuccessStatusCode()
-                .DeleteAsync(token);
+            HttpResponseMessage response = await _httpClient.DeleteAsync($"api/link/{id}", token);
+            response.EnsureSuccessStatusCode();
         }
 
         public async Task<BatchSet<LinkRecord>> List(int index = 0, int count = 1000, CancellationToken token = default)
         {
             _logger.LogTrace($"{nameof(List)}: Index={index}");
 
-            return await _restClient
-                .AddPath($"api/link/list/{index}/{count}")
-                .SetEnsureSuccessStatusCode()
-                .GetAsync(token)
-                .GetContentAsync<BatchSet<LinkRecord>>();
+            return await _httpClient.GetFromJsonAsync<BatchSet<LinkRecord>>($"api/link/list/{index}/{count}", token);
         }
     }
 }

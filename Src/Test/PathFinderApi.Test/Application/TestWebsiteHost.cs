@@ -28,7 +28,7 @@ namespace PathFinderApi.Test.Application
 
         public T Resolve<T>() where T : class => _host?.Services.GetService<T>() ?? throw new InvalidOperationException($"Cannot find service {typeof(T).Name}");
 
-        public PathFinderClient PathFinderClient => new PathFinderClient(Client, Resolve<IJson>(), Resolve<ILoggerFactory>());
+        public PathFinderClient PathFinderClient => new PathFinderClient(Client, Resolve<ILoggerFactory>().CreateLogger<PathFinderClient>());
 
         public TestWebsiteHost StartApiServer()
         {

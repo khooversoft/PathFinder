@@ -1,25 +1,23 @@
 ﻿using Microsoft.Extensions.Logging;
 using PathFinder.sdk.Models;
 using PathFinder.sdk.Records;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Toolbox.Tools;
-using Toolbox.Tools.Rest;
 
 namespace PathFinder.sdk.Client
 {
     public class MetadataClient
     {
-        private readonly RestClient _restClient;
+        private readonly HttpClient _httpClient;
         private readonly ILogger _logger;
 
-        public MetadataClient(RestClient restClient, ILogger logger)
+        public MetadataClient(HttpClient httpClient, ILogger logger)
         {
-            _restClient = restClient;
+            _httpClient = httpClient;
             _logger = logger;
         }
 
@@ -28,12 +26,15 @@ namespace PathFinder.sdk.Client
             id.VerifyNotEmpty(nameof(id));
             _logger.LogTrace($"{nameof(Get)}: Id={id}");
 
-            return await _restClient
-                .AddPath($"api/metadata/{id}")
-                .SetEnsureSuccessStatusCode()
-                .SetValidHttpStatusCodes(HttpStatusCode.NotFound)
-                .GetAsync(token)
-                .GetContentAsync<MetadataRecord?>();
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<MetadataRecord>($"api/metadata/{id}", token);
+            }
+            catch(HttpRequestException ex)
+            {
+                _logger.LogError(ex, $"{nameof(Get)}: id={id} failed");
+                return null;
+            }
         }
 
         public async Task Set(MetadataRecord metadataRecord, CancellationToken token = default)
@@ -44,11 +45,7 @@ namespace PathFinder.sdk.Client
                 .VerifyNotNull(nameof(metadataRecord))
                 .Prepare();
 
-            await _restClient
-                .AddPath($"api/metadata")
-                .SetContent(metadataRecord)
-                .SetEnsureSuccessStatusCode()
-                .PostAsync(token);
+            await _httpClient.PostAsJsonAsync("api/metadata", metadataRecord, token);
         }
 
         public async Task Delete(string id, CancellationToken token = default)
@@ -56,22 +53,15 @@ namespace PathFinder.sdk.Client
             id.VerifyNotEmpty(nameof(id));
             _logger.LogTrace($"{nameof(Delete)}: Id={id}");
 
-            await _restClient
-                .AddPath($"api/metadata/{id}")
-                .SetEnsureSuccessStatusCode()
-                .DeleteAsync(token);
+            HttpResponseMessage? response = await _httpClient.DeleteAsync($"api/metadata/{id}");
+            response.EnsureSuccessStatusCode();
         }
 
         public async Task<BatchSet<MetadataRecord>> List(int index = 0, int count = 1000, CancellationToken token = default)
         {
             _logger.LogTrace($"{nameof(List)}: Index={index}");
 
-            return await _restClient
-                .AddPath($"api/metadata/list/{index}/{count}")
-                .SetEnsureSuccessStatusCode()
-                .GetAsync(token)
-                .GetContentAsync<BatchSet<MetadataRecord>>();
+            return await _httpClient.GetFromJsonAsync<BatchSet<MetadataRecord>>($"api/metadata/list/{index}/{count}", token);
         }
-
     }
 }

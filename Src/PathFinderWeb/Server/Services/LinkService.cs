@@ -17,18 +17,13 @@ namespace PathFinderWeb.Server.Services
     public class LinkService
     {
         private PathFinderClient _pathFinderClient;
-        private ILogger<LinkService> _logger;
 
-        public LinkService(HttpClient httpClient, IJson json, ILoggerFactory loggerFactory)
+        public LinkService(HttpClient httpClient, ILoggerFactory loggerFactory)
         {
             httpClient.VerifyNotNull(nameof(httpClient));
-            json.VerifyNotNull(nameof(json));
             loggerFactory.VerifyNotNull(nameof(loggerFactory));
 
-            _logger = loggerFactory.CreateLogger<LinkService>();
-            _logger.LogInformation($"BaseUrl: {httpClient.BaseAddress}");
-
-            _pathFinderClient = new PathFinderClient(httpClient, json, loggerFactory);
+            _pathFinderClient = new PathFinderClient(httpClient, loggerFactory.CreateLogger<PathFinderClient>());
         }
 
         public async Task<LinkRecord?> Get(string id, CancellationToken token = default) => await _pathFinderClient.Link.Get(id, token);

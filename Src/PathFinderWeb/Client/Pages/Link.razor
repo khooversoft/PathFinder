@@ -22,19 +22,8 @@
             break;
 
         case RunState.Result:
-            <div class="mt-md-2">
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <td class="table-col0 table-padding">Count</td>
-                            <td class="table-padding">@Context.Count</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
             <div class="row">
-                <div class="p-4">
+                <div class="pl-3 pr-3">
                     <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="20" AllowSorting="false" Data="@Context.Records" TItem="LinkRecord" ColumnWidth="200px" RowSelect="OnRowSelect">
                         <Columns>
                             <RadzenGridColumn TItem="LinkRecord" Property="Id" Title="Id" />
@@ -44,6 +33,5 @@
                 </div>
             </div>
             break;
-
     }
 </div>

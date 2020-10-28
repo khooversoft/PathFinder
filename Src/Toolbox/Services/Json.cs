@@ -12,14 +12,9 @@ namespace Toolbox.Services
     /// </summary>
     public class Json : IJson
     {
-        private static readonly JsonSerializerOptions _options = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
-        };
+        public static Json Default { get; } = new Json();
 
-        private static readonly JsonSerializerOptions _formatOption = new JsonSerializerOptions
+        public static JsonSerializerOptions JsonSerializerFormatOption { get; } = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -27,12 +22,17 @@ namespace Toolbox.Services
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
         };
 
-        public static Json Default { get; } = new Json();
+        public static JsonSerializerOptions JsonSerializerOptions { get; } = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
+        };
 
-        public string Serialize<T>(T subject) => JsonSerializer.Serialize(subject, _options);
+        public T Deserialize<T>(string subject) => JsonSerializer.Deserialize<T>(subject, JsonSerializerOptions);
 
-        public string SerializeFormat<T>(T subject) => JsonSerializer.Serialize(subject, _formatOption);
+        public string Serialize<T>(T subject) => JsonSerializer.Serialize(subject, JsonSerializerOptions);
 
-        public T Deserialize<T>(string subject) => JsonSerializer.Deserialize<T>(subject, _options);
+        public string SerializeFormat<T>(T subject) => JsonSerializer.Serialize(subject, JsonSerializerFormatOption);
     }
 }

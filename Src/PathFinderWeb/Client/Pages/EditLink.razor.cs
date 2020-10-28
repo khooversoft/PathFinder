@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components.Web;
 using PathFinder.sdk.Records;
 using PathFinderWeb.Client.Application;
 using PathFinderWeb.Client.Application.Menu;
@@ -15,7 +17,7 @@ using Toolbox.Tools;
 
 namespace PathFinderWeb.Client.Pages
 {
-    public partial class EditLink : ComponentBase
+    public partial class EditLink : ComponentBase, IDisposable
     {
         [Inject]
         public LinkService LinkService { get; set; } = null!;
@@ -32,13 +34,30 @@ namespace PathFinderWeb.Client.Pages
 
         public string? ErrorMessage { get; set; }
 
+        private EditContext EditContext { get; set; } = null!;
+
+        private bool IsFormValid { get; set; } = false;
+
+        protected override void OnInitialized()
+        {
+            EditContext = new EditContext(FormData);
+            EditContext.OnFieldChanged += FieldChange;
+
+            base.OnInitialized();
+        }
 
         protected override async Task OnParametersSetAsync()
         {
             BuildMenu();
             await LoadData();
+        }
 
-            base.OnParametersSet();
+        public void Dispose()
+        {
+            if (EditContext != null)
+            {
+                EditContext.OnFieldChanged -= FieldChange;
+            }
         }
 
         private void BuildMenu()
@@ -47,33 +66,17 @@ namespace PathFinderWeb.Client.Pages
 
             MenuCollection = new MenuCollection()
             {
-                new MenuButton(Text, async () => await Save(), IconName, true),
+                new MenuButton(Text, async () => await Save(), IconName, IsFormValid),
                 new MenuDivider(),
                 new MenuItem("Cancel", NavigationHelper.LinkPage(), "oi-x", true),
             };
         }
 
-        public async Task Save()
+        private async Task Save()
         {
             if (!Id.IsEmpty()) return;
 
             FormData.VerifyNotNull(nameof(FormData));
-
-            var tests = new Func<string?>[]
-            {
-                () => FormData.Id.IsEmpty() ? "ID is required" : null,
-                () => FormData.RedirectUrl.IsEmpty() ? "Url Redirect is required" : null,
-            };
-
-            tests
-                .Select(x => x())
-                .FirstOrDefault(x => x != null)
-                ?.Action(x =>
-                {
-                    ErrorMessage = x;
-                    StateHasChanged();
-                    return;
-                });
 
             try
             {
@@ -108,7 +111,6 @@ namespace PathFinderWeb.Client.Pages
                     Id = result.Id,
                     RedirectUrl = result.RedirectUrl,
                 };
-
             }
             catch
             {
@@ -118,13 +120,17 @@ namespace PathFinderWeb.Client.Pages
             StateHasChanged();
         }
 
+        private void FieldChange(object sender, FieldChangedEventArgs e)
+        {
+            Console.WriteLine($"{nameof(FieldChange)}");
+            IsFormValid = !FormData.Id.IsEmpty() && !FormData.RedirectUrl.IsEmpty();
+            StateHasChanged();
+        }
+
         public class FormDataDetail
         {
-            [Required]
             public string? Id { get; set; }
 
-            [Required]
-            [Url]
             public string? RedirectUrl { get; set; }
         }
 

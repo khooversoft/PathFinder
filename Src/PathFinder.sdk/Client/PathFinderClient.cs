@@ -2,7 +2,6 @@
 using System.Net.Http;
 using Toolbox.Services;
 using Toolbox.Tools;
-using Toolbox.Tools.Rest;
 
 namespace PathFinder.sdk.Client
 {
@@ -10,20 +9,17 @@ namespace PathFinder.sdk.Client
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<PathFinderClient> _logger;
-        private readonly RestClient _restClient;
 
-        public PathFinderClient(HttpClient httpClient, IJson json, ILoggerFactory loggerFactory)
+        public PathFinderClient(HttpClient httpClient, ILogger<PathFinderClient> logger)
         {
             httpClient.VerifyNotNull(nameof(httpClient));
-            json.VerifyNotNull(nameof(json));
-            loggerFactory.VerifyNotNull(nameof(loggerFactory));
+            logger.VerifyNotNull(nameof(logger));
 
             _httpClient = httpClient;
-            _logger = loggerFactory.CreateLogger<PathFinderClient>();
+            _logger = logger;
 
-            _restClient = new RestClient(httpClient, loggerFactory.CreateLogger<RestClient>(), json);
-            Link = new LinkClient(_restClient, _logger);
-            Metadata = new MetadataClient(_restClient, _logger);
+            Link = new LinkClient(_httpClient, _logger);
+            Metadata = new MetadataClient(_httpClient, _logger);
         }
 
         public LinkClient Link { get; }

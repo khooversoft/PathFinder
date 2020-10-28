@@ -40,43 +40,5 @@ namespace PathFinder.Cosmos.Store.Application
         /// Frequency of the agent's heart beat
         /// </summary>
         public TimeSpan HeartbeatFrequency { get; set; } = TimeSpan.FromMinutes(5);
-
-        /// <summary>
-        /// Verify required values are present
-        /// </summary>
-        public void Verify()
-        {
-            ConnectionString.VerifyNotEmpty(nameof(ConnectionString));
-            AccountKey.VerifyNotEmpty(nameof(AccountKey));
-            DatabaseName.VerifyNotEmpty(nameof(DatabaseName));
-        }
-
-        /// <summary>
-        /// Get resolved connection string, account key is resolved in the connection string
-        /// </summary>
-        /// <returns></returns>
-        public string GetResolvedConnectionString()
-        {
-            Verify();
-
-            return Resolve(ConnectionString);
-        }
-
-        /// <summary>
-        /// Get property values for resolving properties
-        /// </summary>
-        /// <returns></returns>
-        public IReadOnlyList<KeyValuePair<string, string>> GetProperties() => new[]
-        {
-            new KeyValuePair<string, string>(nameof(AccountKey), AccountKey),
-            new KeyValuePair<string, string>(nameof(DatabaseName), DatabaseName),
-        };
-
-        /// <summary>
-        /// Resolve string with option's property values
-        /// </summary>
-        /// <param name="value">subject to resolve</param>
-        /// <returns></returns>
-        public string Resolve(string value) => new PropertyResolver(GetProperties()).Resolve(value);
     }
 }

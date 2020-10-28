@@ -31,7 +31,7 @@
     [Parameter]
     public MenuCollection MenuCollection { get; set; } = null!;
 
-    private string Disabled(IMenuItem menuItem) => menuItem.Enabled ? string.Empty : "disabled";
+    private string Disabled(IMenuItem menuItem) => menuItem.Enabled ? string.Empty : "text-muted disabled";
 
     private string Class(IMenuItem menuItem) => $"nav-link nav-link-menu float-right {Disabled(menuItem)}";
 }
