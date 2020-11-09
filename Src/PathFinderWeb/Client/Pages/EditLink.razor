@@ -1,6 +1,8 @@
 ﻿@page "/link/edit"
 @page "/link/edit/{id}"
 
+@using Toolbox.Extensions;
+@using PathFinderWeb.Client.Application;
 
 <PageHeader Header="Links" SubHeader="Manage link records" />
 
@@ -8,21 +10,26 @@
 
 <div class="mt-md-2">
     <EditForm EditContext="@EditContext">
-        <DataAnnotationsValidator />
 
         <div class="simple-form">
             <div class="form-group row">
                 <label class="col-md-2" for="id">Id:</label>
                 <div class="col-md-10">
-                    <InputText @bind-Value="@FormData.Id" type="text" class="form-control" id="id" placeholder="Enter ID for link." />
-                    <ValidationMessage For="@(() => FormData.Id)" />
+                    <InputText @bind-Value="@FormData.Id" type="text" class="form-control" id="id" placeholder="Enter ID for link." disabled="@(!Id.IsEmpty())" />
                 </div>
             </div>
+
             <div class="form-group row">
                 <label class="col-md-2" for="url">Redirect URL:</label>
                 <div class="col-md-10">
-                    <InputText  @bind-Value="FormData.RedirectUrl" type="text" class="form-control" id="url" placeholder="Enter the URL" />
-                    <ValidationMessage For="@(() => FormData.RedirectUrl)" />
+                    <InputText @bind-Value="FormData.RedirectUrl" type="text" class="form-control" id="url" placeholder="Enter the URL" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-2" for="url">Enabled:</label>
+                <div class="col-md-10">
+                    <InputCheckbox @bind-Value="FormData.Enabled" />
                 </div>
             </div>
 
@@ -30,3 +37,20 @@
     </EditForm>
 </div>
 
+<Modal @ref="Modal">
+    <Title>Delete Link</Title>
+    <Body>
+        <p>
+            Do you want to delete <span class="font-weight-bold">@Id</span> link?
+        </p>
+
+        <div class="alert alert-warning" role="alert">
+            Warning, this will delete the link and is not recoverable without re-adding.
+        </div>
+
+    </Body>
+    <Footer>
+        <NavLink @onclick="Delete" class="btn btn-primary model-normal-button">Delete</NavLink>
+        <button type="button" class="btn btn-light model-close-button" data-dismiss="modal" @onclick="() => Modal.Close()">Close</button>
+    </Footer>
+</Modal>

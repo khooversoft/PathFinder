@@ -1,11 +1,12 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using Toolbox.Actor;
 using Toolbox.Actor.Host;
 using Toolbox.Actor.Test.Application;
 using Xunit;
 
-namespace Toolbox.Actor.Tests
+namespace Toolbox.Test.Actor
 {
     [Trait("Category", "Actor")]
     public class DeactivateActorTests

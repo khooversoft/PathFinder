@@ -7,6 +7,7 @@ namespace PathFinder.sdk.Application
     public enum RunEnvironment
     {
         Unknown,
+        Local,
         Dev,
         Acpt,
         Prod

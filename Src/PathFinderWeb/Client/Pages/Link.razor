@@ -26,8 +26,9 @@
                 <div class="pl-3 pr-3">
                     <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="20" AllowSorting="false" Data="@Context.Records" TItem="LinkRecord" ColumnWidth="200px" RowSelect="OnRowSelect">
                         <Columns>
-                            <RadzenGridColumn TItem="LinkRecord" Property="Id" Title="Id" />
+                            <RadzenGridColumn TItem="LinkRecord" Property="Id" Title="Id" Width="100px"/>
                             <RadzenGridColumn TItem="LinkRecord" Property="RedirectUrl" Title="Redirect to Url" />
+                            <RadzenGridColumn TItem="LinkRecord" Property="Enabled" Title="Enabled" Width="50px" />
                         </Columns>
                     </RadzenGrid>
                 </div>

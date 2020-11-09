@@ -10,7 +10,10 @@ namespace PathFinderWeb.Client.Application.Menu
     {
         public List<IMenuItem> MenuItems { get; set; } = new List<IMenuItem>();
 
-        public void Add(IMenuItem menuItem) => MenuItems.Add(menuItem);
+        public void Add(IMenuItem? menuItem)
+        {
+            if (menuItem != null) MenuItems.Add(menuItem);
+        }
 
         public IEnumerator<IMenuItem> GetEnumerator() => MenuItems.GetEnumerator();
 

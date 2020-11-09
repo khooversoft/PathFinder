@@ -7,18 +7,17 @@ namespace PathFinderWeb.Client.Application.Menu
 {
     public class MenuButton : IMenuItem
     {
-        public MenuButton(string text, Func<Task> onClick, string iconName, bool enabled)
+        public MenuButton(string text, Func<Task> onClick, Icon icon, bool enabled)
         {
             Text = text;
             OnClick = onClick;
-            IconName = iconName;
+            Icon = icon;
             Enabled = enabled;
         }
 
         public string Text { get; }
         public Func<Task> OnClick { get; }
-        public string IconName { get; }
+        public Icon Icon { get; }
         public bool Enabled { get; }
-
     }
 }

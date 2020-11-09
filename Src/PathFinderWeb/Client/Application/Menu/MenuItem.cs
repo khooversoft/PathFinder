@@ -7,19 +7,19 @@ namespace PathFinderWeb.Client.Application.Menu
 {
     public class MenuItem : IMenuItem
     {
-        public MenuItem(string text, string href, string iconName, bool enabled)
+        public MenuItem(string text, string href, Icon icon, bool enabled)
         {
             Text = text;
             Href = href;
-            IconName = iconName;
+            Icon = icon;
             Enabled = enabled;
         }
 
-        public MenuItem(string text, string iconName, string href, MenuItem[] children)
+        public MenuItem(string text, Icon icon, string href, MenuItem[] children)
         {
             Text = text;
             Href = href;
-            IconName = iconName;
+            Icon = icon;
             Enabled = true;
 
             Children = children;
@@ -27,7 +27,7 @@ namespace PathFinderWeb.Client.Application.Menu
 
         public string Text { get; }
         public string Href { get; }
-        public string IconName { get; }
+        public Icon Icon { get; }
         public bool Enabled { get; }
 
         public MenuItem[]? Children { get; set; }

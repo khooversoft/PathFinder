@@ -10,8 +10,9 @@ using Toolbox.Actor.Test.Application;
 using Xunit;
 using Xunit.Abstractions;
 using Toolbox.Extensions;
+using Toolbox.Actor;
 
-namespace Toolbox.Actor.Tests
+namespace Toolbox.Test.Actor
 {
     public class MultipleActorTests
     {
@@ -201,8 +202,8 @@ namespace Toolbox.Actor.Tests
             public StringCache(Action<int> increment) => Increment = increment;
 
             private Action<int> Increment { get; }
-            public ActorKey GetActorKey() => base.ActorKey;
-            public IActorHost GetActorHost() => base.ActorHost;
+            public ActorKey GetActorKey() => ActorKey;
+            public IActorHost GetActorHost() => ActorHost;
 
             protected override Task OnActivate()
             {
@@ -240,8 +241,8 @@ namespace Toolbox.Actor.Tests
             public StringCache2(Action<int> increment) => Increment = increment;
 
             private Action<int> Increment { get; }
-            public ActorKey GetActorKey() => base.ActorKey;
-            public IActorHost GetActorHost() => base.ActorHost;
+            public ActorKey GetActorKey() => ActorKey;
+            public IActorHost GetActorHost() => ActorHost;
 
             protected override Task OnActivate()
             {

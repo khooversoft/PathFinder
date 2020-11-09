@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -13,7 +8,7 @@ using PathFinderWeb.Server.Application;
 
 namespace PathFinderWeb.Server
 {
-    public class Program
+    internal static class Program
     {
         public static void Main(string[] args)
         {
@@ -26,7 +21,7 @@ namespace PathFinderWeb.Server
                 .Run();
         }
 
-        internal static IHostBuilder CreateHostBuilder(string[] args, IOption option) =>
+        private static IHostBuilder CreateHostBuilder(string[] args, IOption option) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices(config =>
                 {
@@ -34,7 +29,7 @@ namespace PathFinderWeb.Server
                 })
                 .ConfigureLogging(builder =>
                 {
-                    if (option.RunEnvironment == RunEnvironment.Dev)
+                    if (option.RunEnvironment == RunEnvironment.Local)
                     {
                         builder.AddDebug();
                         builder.AddFilter<DebugLoggerProvider>(x => true);

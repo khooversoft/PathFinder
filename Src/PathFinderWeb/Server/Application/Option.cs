@@ -14,7 +14,7 @@ namespace PathFinderWeb.Server.Application
 
         public string? SecretId { get; set; }
 
-        public string Environment { get; set; } = "dev";
+        public string Environment { get; set; } = "local";
 
         public RunEnvironment RunEnvironment { get; set; } = RunEnvironment.Unknown;
     }

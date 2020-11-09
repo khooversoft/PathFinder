@@ -44,6 +44,6 @@ Write-Host "The $Name namespace does not exist.";
 Write-Host "Creating the $Name account in the $Location region...";
 
 New-AzCosmosDBAccount -ResourceGroupName $ResourceGroupName -Name $Name -Location $Location;
-Write-Host "The $NamespaceName account in Resource Group $ResourceGroupName in the $Location region has been successfully created.";
+Write-Host "The $Name account in Resource Group $ResourceGroupName in the $Location region has been successfully created.";
 
 Write-Host "Completed";

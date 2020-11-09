@@ -1,0 +1,32 @@
+﻿@page "/link/edit"
+@page "/link/edit/{id}"
+
+
+<PageHeader Header="Links" SubHeader="Manage link records" />
+
+<PageMenu MenuCollection="@MenuCollection" />
+
+<div class="mt-md-2">
+    <EditForm EditContext="@EditContext">
+        <DataAnnotationsValidator />
+
+        <div class="simple-form">
+            <div class="form-group row">
+                <label class="col-md-2" for="id">Id:</label>
+                <div class="col-md-10">
+                    <InputText @bind-Value="@FormData.Id" type="text" class="form-control" id="id" placeholder="Enter ID for link." />
+                    <ValidationMessage For="@(() => FormData.Id)" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2" for="url">Redirect URL:</label>
+                <div class="col-md-10">
+                    <InputText  @bind-Value="FormData.RedirectUrl" type="text" class="form-control" id="url" placeholder="Enter the URL" />
+                    <ValidationMessage For="@(() => FormData.RedirectUrl)" />
+                </div>
+            </div>
+
+        </div>
+    </EditForm>
+</div>
+

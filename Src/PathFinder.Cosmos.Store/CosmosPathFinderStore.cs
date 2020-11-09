@@ -26,7 +26,7 @@ namespace PathFinder.Cosmos.Store
             _cosmosClient = new CosmosClient(storeOption.ResolvedConnectionString());
 
             Database = new StoreDatabase(_cosmosClient, loggerFactory.CreateLogger<StoreDatabase>());
-            Container = new StoreRepository(storeOption, _cosmosClient, loggerFactory, loggerFactory.CreateLogger<StoreRepository>());
+            Container = new StoreContainer(storeOption, _cosmosClient, loggerFactory, loggerFactory.CreateLogger<StoreContainer>());
         }
 
         public IStoreDatabase Database { get; }

@@ -19,7 +19,7 @@
         {
             <li class="nav-item px-3">
                 <NavLink class="nav-link" href=@item.Href Match="NavLinkMatch.All">
-                    <span class="oi @item.IconName" aria-hidden="true"></span> @item.Text
+                    <span class="oi @item.Icon.ToCode(true)" aria-hidden="true"></span> @item.Text
                 </NavLink>
 
                 @if (item.Children != null)
@@ -29,7 +29,7 @@
                         {
                             <li class="nav-item px-3">
                                 <NavLink class="nav-link" href=@childItem.Href>
-                                    <span class="oi @childItem.IconName" aria-hidden="true"></span> @childItem.Text
+                                    <span class="oi @childItem.Icon.ToCode(true)" aria-hidden="true"></span> @childItem.Text
                                 </NavLink>
                             </li>
                         }
@@ -45,10 +45,7 @@
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
+    private void ToggleNavMenu() => collapseNavMenu = !collapseNavMenu;
 
     private IReadOnlyList<MenuItem> NavMenuItems => _navMenuService.GetLeftMenuItems();
 }

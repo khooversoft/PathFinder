@@ -8,8 +8,9 @@ using Toolbox.Extensions;
 using Toolbox.Actor.Host;
 using Toolbox.Actor.Test.Application;
 using Xunit;
+using Toolbox.Actor;
 
-namespace Toolbox.Actor.Test
+namespace Toolbox.Test.Actor
 {
     [Trait("Category", "Actor")]
     public class ActorTests
@@ -232,9 +233,9 @@ namespace Toolbox.Actor.Test
 
             private Action<int> Increment { get; }
 
-            public ActorKey GetActorKey() => base.ActorKey;
+            public ActorKey GetActorKey() => ActorKey;
 
-            public IActorHost GetActorManager() => base.ActorHost;
+            public IActorHost GetActorManager() => ActorHost;
 
             protected override Task OnActivate()
             {

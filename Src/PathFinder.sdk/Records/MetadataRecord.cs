@@ -19,6 +19,8 @@ namespace PathFinder.sdk.Records
 
         public IDictionary<string, string>? Properties { get; set; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
+        public bool Enabled { get; set; } = true;
+
         public void Prepare()
         {
             Id = Id
@@ -33,7 +35,8 @@ namespace PathFinder.sdk.Records
         {
             return obj is MetadataRecord record &&
                    Id?.ToLowerInvariant() == record.Id?.ToLowerInvariant() &&
-                   IsPropertiesMatch(Properties, record.Properties);
+                   IsPropertiesMatch(Properties, record.Properties) &&
+                   Enabled == record.Enabled;
 
             static bool IsPropertiesMatch(IDictionary<string, string>? lValue, IDictionary<string, string>? rValue)
             {

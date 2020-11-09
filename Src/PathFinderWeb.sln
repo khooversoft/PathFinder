@@ -1,0 +1,69 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30320.27
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PathFinder.sdk", "PathFinder.sdk\PathFinder.sdk.csproj", "{6926D604-B297-471E-A184-B50669E2A1DD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Toolbox", "Toolbox\Toolbox.csproj", "{596536DC-A025-4FE0-A8C5-1DC96E6A6167}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{237162D6-616C-4CBF-9A70-5516C39304F0}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{63CE15BF-737C-497A-A274-1569C87BB2B2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Toolbox.Test", "Test\Toolbox.Test\Toolbox.Test.csproj", "{899FF049-D18D-424C-A79E-2BD064E7F2C8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sdk", "Sdk", "{E932F954-449A-4CED-8D47-97CE398C9665}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PathFinderWeb.Server", "PathFinderWeb\Server\PathFinderWeb.Server.csproj", "{D1924974-E0A8-41C7-AC06-163E0BD2CFFB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PathFinderWeb.Client", "PathFinderWeb\Client\PathFinderWeb.Client.csproj", "{A74F118D-EF94-4F75-BB51-748BCBD270E5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PathFinderWeb.Shared", "PathFinderWeb\Shared\PathFinderWeb.Shared.csproj", "{34F308D9-FA9D-46C2-A119-41FCDBADDC15}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6926D604-B297-471E-A184-B50669E2A1DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6926D604-B297-471E-A184-B50669E2A1DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6926D604-B297-471E-A184-B50669E2A1DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6926D604-B297-471E-A184-B50669E2A1DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{596536DC-A025-4FE0-A8C5-1DC96E6A6167}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{596536DC-A025-4FE0-A8C5-1DC96E6A6167}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{596536DC-A025-4FE0-A8C5-1DC96E6A6167}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{596536DC-A025-4FE0-A8C5-1DC96E6A6167}.Release|Any CPU.Build.0 = Release|Any CPU
+		{899FF049-D18D-424C-A79E-2BD064E7F2C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{899FF049-D18D-424C-A79E-2BD064E7F2C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{899FF049-D18D-424C-A79E-2BD064E7F2C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{899FF049-D18D-424C-A79E-2BD064E7F2C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1924974-E0A8-41C7-AC06-163E0BD2CFFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1924974-E0A8-41C7-AC06-163E0BD2CFFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1924974-E0A8-41C7-AC06-163E0BD2CFFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1924974-E0A8-41C7-AC06-163E0BD2CFFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A74F118D-EF94-4F75-BB51-748BCBD270E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A74F118D-EF94-4F75-BB51-748BCBD270E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A74F118D-EF94-4F75-BB51-748BCBD270E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A74F118D-EF94-4F75-BB51-748BCBD270E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34F308D9-FA9D-46C2-A119-41FCDBADDC15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34F308D9-FA9D-46C2-A119-41FCDBADDC15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34F308D9-FA9D-46C2-A119-41FCDBADDC15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34F308D9-FA9D-46C2-A119-41FCDBADDC15}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6926D604-B297-471E-A184-B50669E2A1DD} = {E932F954-449A-4CED-8D47-97CE398C9665}
+		{596536DC-A025-4FE0-A8C5-1DC96E6A6167} = {E932F954-449A-4CED-8D47-97CE398C9665}
+		{899FF049-D18D-424C-A79E-2BD064E7F2C8} = {63CE15BF-737C-497A-A274-1569C87BB2B2}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5A1E8036-8C94-464D-BBF5-C14A9EB016C6}
+	EndGlobalSection
+EndGlobal

@@ -1,19 +1,19 @@
 ﻿using Microsoft.Extensions.Configuration;
+using PathFinder.sdk.Application;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using Toolbox.Tools;
-using Toolbox.Extensions;
-using PathFinder.sdk.Application;
 using System.Reflection;
+using Toolbox.Extensions;
+using Toolbox.Tools;
 
 namespace PathFinderWeb.Server.Application
 {
     internal class OptionBuilder
     {
-        public OptionBuilder() { }
+        public OptionBuilder()
+        {
+        }
 
         public string[]? Args { get; set; }
 

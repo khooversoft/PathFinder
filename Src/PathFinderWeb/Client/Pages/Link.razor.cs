@@ -31,9 +31,9 @@ namespace PathFinderWeb.Client.Pages
         {
             MenuCollection = new MenuCollection()
             {
-                new MenuItem("Create", NavigationHelper.NewLinkPage(), "oi-pencil", true),
+                new MenuItem("Create", NavigationHelper.NewLinkPage(), IconHelper.Create, true),
                 new MenuDivider(),
-                new MenuButton("Refresh", async () => await GetLinks(), "oi-reload", true),
+                new MenuButton("Refresh", async () => await GetLinks(), IconHelper.Reload, true),
             };
 
             base.OnParametersSet();
@@ -56,13 +56,6 @@ namespace PathFinderWeb.Client.Pages
 
                 IReadOnlyList<LinkRecord> result = await LinkService.List();
                 Context.SetMessages(result.Count, result);
-
-                //await Task.Delay(TimeSpan.FromSeconds(1));
-
-                //LinkRecord[] records = Enumerable.Range(0, 10)
-                //    .Select(x => new LinkRecord { Id = $"linkId_{x}", RedirectUrl = $"http://localhost/hello_{x}" })
-                //    .ToArray();
-                //Context.SetMessages(1, records);
             }
             catch
             {

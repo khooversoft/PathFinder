@@ -13,9 +13,9 @@ namespace PathFinderWeb.Client.Services
 
         public IReadOnlyList<MenuItem> GetLeftMenuItems() => new[]
         {
-            new MenuItem("Home", string.Empty, "oi-home", true),
-            new MenuItem("Links", NavigationHelper.LinkPage(), "oi-external-link", true),
-            new MenuItem("Metadata", "metadata", "oi-list", true),
+            new MenuItem("Home", string.Empty, IconHelper.Home, true),
+            new MenuItem("Links", NavigationHelper.LinkPage(), IconHelper.External, true),
+            new MenuItem("Metadata", "metadata", IconHelper.List, true),
         };
     }
 }

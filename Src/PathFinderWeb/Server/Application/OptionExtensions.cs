@@ -18,6 +18,7 @@ namespace PathFinderWeb.Server.Application
 
         public static string ConvertToResourceId(this RunEnvironment subject) => subject switch
         {
+            RunEnvironment.Local => $"{baseId}.local-config.json",
             RunEnvironment.Dev => $"{baseId}.dev-config.json",
             RunEnvironment.Acpt => $"{baseId}.acpt-config.json",
             RunEnvironment.Prod => $"{baseId}.prod-config.json",

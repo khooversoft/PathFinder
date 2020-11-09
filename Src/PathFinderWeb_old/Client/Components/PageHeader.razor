@@ -1,0 +1,19 @@
+﻿<div>
+    <div class="page-title">@Header</div>
+
+    @if (SubHeader != null)
+    {
+        <div class="page-subTitle">@SubHeader</div>
+    }
+</div>
+
+<div class="border-bottom mt-2 mb-1"></div>
+
+
+@code {
+    [Parameter]
+    public string Header { get; set; } = null!;
+
+    [Parameter]
+    public string SubHeader { get; set; } = null!;
+}

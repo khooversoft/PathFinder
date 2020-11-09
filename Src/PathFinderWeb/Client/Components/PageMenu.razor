@@ -7,13 +7,13 @@
         {
             case MenuItem item:
                 <NavLink class=@Class(item) href=@item.Href>
-                    <span class="oi @item.IconName"></span> @item.Text
+                    <span class="oi @item.Icon.ToCode(item.Enabled)"></span> @item.Text
                 </NavLink>
                 break;
 
             case MenuButton button:
                 <NavLink @onclick=@button.OnClick class=@Class(button)>
-                    <span class="oi @button.IconName"></span> @button.Text
+                    <span class="oi @button.Icon.ToCode(button.Enabled)"></span> @button.Text
                 </NavLink>
                 break;
 
