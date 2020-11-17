@@ -17,7 +17,7 @@ namespace PathFinderWeb.Client
             builder.Services.AddScoped<NavMenuService>();
             builder.Services.AddScoped<LinkService>();
             builder.Services.AddScoped<ClientContentService>();
-            builder.Services.AddSingleton<IJson, Json>();
+            builder.Services.AddSingleton<StateCacheService>();
 
             builder.RootComponents.Add<App>("app");
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

@@ -34,7 +34,9 @@ namespace Toolbox.Extensions
             if (subject.IsEmpty()) return subject;
             parameters.VerifyNotNull(nameof(parameters));
 
-            return subject + " (" + string.Join(", ", parameters.Select(x => $"{x.Key}={x.Value}")) + ")";
+            string parameterString = string.Join(", ", parameters.Select(x => $"{x.Key}={x.Value}"));
+
+            return subject + (parameterString.IsEmpty() ? $" ({parameterString})" : string.Empty);
         }
 
         /// <summary>

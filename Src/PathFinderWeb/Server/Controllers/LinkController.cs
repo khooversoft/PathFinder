@@ -45,11 +45,19 @@ namespace PathFinderWeb.Server.Controllers
             return Ok();
         }
 
-        [HttpGet("list/{index}/{count}")]
-        public async Task<IActionResult> List(int index, int count)
+        [HttpGet("list")]
+        public async Task<IActionResult> List([FromQuery] QueryParameters listParameters)
         {
-            BatchSet<LinkRecord> list = await _linkService.List(index, count);
-            return Ok(list);
+            BatchSet<LinkRecord> list = await _linkService.List(listParameters);
+            int index = listParameters.Index + listParameters.Count;
+
+            var result = new BatchSet<LinkRecord>
+            {
+                ContinuationUrl = $"api/link/list?{listParameters.WithIndex(index).ToQuery()}",
+                Records = list.Records.ToArray(),
+            };
+
+            return Ok(result);
         }
     }
 }

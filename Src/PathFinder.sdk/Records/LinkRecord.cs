@@ -2,14 +2,15 @@
 using PathFinder.sdk.Services.RecordAbstract;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Toolbox.Tools;
 
 namespace PathFinder.sdk.Records
 {
     public class LinkRecord : RecordBase, IRecord
     {
-        public LinkRecord() : base(nameof(LinkRecord)) { }
+        public LinkRecord() : base(nameof(LinkRecord))
+        {
+        }
 
         public LinkRecord(LinkRecord linkRecord)
             : base(linkRecord)
@@ -19,12 +20,12 @@ namespace PathFinder.sdk.Records
             Enabled = linkRecord.Enabled;
         }
 
+        public bool Enabled { get; set; } = true;
+
         [JsonProperty("id")]
         public string Id { get; set; } = null!;
 
         public string RedirectUrl { get; set; } = null!;
-
-        public bool Enabled { get; set; } = true;
 
         public void Prepare()
         {
@@ -40,15 +41,16 @@ namespace PathFinder.sdk.Records
         public override bool Equals(object? obj)
         {
             return obj is LinkRecord record &&
-                   Id.ToLowerInvariant() == record.Id.ToLowerInvariant() &&
+                   base.Equals(obj) &&
+                   Id == record.Id &&
                    RedirectUrl == record.RedirectUrl &&
                    Enabled == record.Enabled;
         }
 
-        public override int GetHashCode() => HashCode.Combine(Id, RedirectUrl, Enabled);
-
-        public static bool operator ==(LinkRecord? left, LinkRecord? right) => EqualityComparer<LinkRecord>.Default.Equals(left!, right!);
+        public override int GetHashCode() => HashCode.Combine(base.GetHashCode(), Id, RedirectUrl, Enabled) ^ base.GetHashCode();
 
         public static bool operator !=(LinkRecord? left, LinkRecord? right) => !(left == right);
+
+        public static bool operator ==(LinkRecord? left, LinkRecord? right) => EqualityComparer<LinkRecord>.Default.Equals(left!, right!);
     }
 }

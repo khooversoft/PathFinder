@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
 using PathFinder.sdk.Records;
+using PathFinder.sdk.Services.RecordAbstract;
 using PathFinderWeb.Client.Application;
 using PathFinderWeb.Client.Application.Menu;
 using PathFinderWeb.Client.Components;
@@ -48,7 +49,6 @@ namespace PathFinderWeb.Client.Pages
         protected override void OnInitialized()
         {
             EditContext = new EditContext(FormData);
-            EditContext.OnFieldChanged += FieldChange;
 
             base.OnInitialized();
         }
@@ -61,10 +61,6 @@ namespace PathFinderWeb.Client.Pages
 
         public void Dispose()
         {
-            if (EditContext != null)
-            {
-                EditContext.OnFieldChanged -= FieldChange;
-            }
         }
 
         private void BuildMenu()
@@ -84,6 +80,7 @@ namespace PathFinderWeb.Client.Pages
         private async Task Save()
         {
             FormData.VerifyNotNull(nameof(FormData));
+            ErrorMessage = null;
 
             try
             {
@@ -116,12 +113,15 @@ namespace PathFinderWeb.Client.Pages
 
         private async Task LoadData()
         {
+            ErrorMessage = null;
             if (Id.IsEmpty()) return;
 
             try
             {
                 FormData = await LinkService.Get(Id!);
                 CurrentFormData = new LinkRecord(FormData);
+
+                FormData.Tags.Add(new Tag(string.Empty, string.Empty));
             }
             catch
             {
@@ -131,44 +131,31 @@ namespace PathFinderWeb.Client.Pages
             StateHasChanged();
         }
 
-        private void FieldChange(object sender, FieldChangedEventArgs e)
+        private void OnChangeId(string value) => this.Action(x => FormData.Id = value).SetCanSave();
+
+        private void OnChangeRedirectUrl(string value) => this.Action(x => FormData.Id = value).SetCanSave();
+
+        private void OnChangeOwner(string value) => this.Action(x => FormData.Id = value).SetCanSave();
+
+        private void SetCanSave()
         {
-            CanSave = !FormData.Id.IsEmpty() && !FormData.RedirectUrl.IsEmpty() && (Id.IsEmpty() || CurrentFormData != FormData);
+            CanSave = !Id.IsEmpty() &&
+                !FormData.RedirectUrl.IsEmpty() &&
+                FormData != CurrentFormData;
+
             BuildMenu();
             StateHasChanged();
         }
 
-        //public class FormDataDetail
-        //{
-        //    public string? Id { get; set; }
+        private void VerifyExtra()
+        {
+            var tagList = FormData.Tags.ToList();
 
-        //    public string? RedirectUrl { get; set; }
+            if (FormData.Tags.Any(x => x.Key.IsEmpty() || x.Value.IsEmpty())) return;
 
-        //    public bool Enabled { get; set; }
+            FormData.Tags.Add(new Tag(string.Empty, string.Empty));
 
-        //    public FormDataDetail Clone()
-        //    {
-        //        return new FormDataDetail
-        //        {
-        //            Id = Id,
-        //            RedirectUrl = RedirectUrl,
-        //            Enabled = Enabled,
-        //        };
-        //    }
-
-        //    public override bool Equals(object? obj)
-        //    {
-        //        return obj is FormDataDetail detail &&
-        //               Id == detail.Id &&
-        //               RedirectUrl == detail.RedirectUrl &&
-        //               Enabled == detail.Enabled;
-        //    }
-
-        //    public override int GetHashCode() => HashCode.Combine(Id, RedirectUrl, Enabled);
-
-        //    public static bool operator ==(FormDataDetail? left, FormDataDetail? right) => EqualityComparer<FormDataDetail>.Default.Equals(left!, right!);
-
-        //    public static bool operator !=(FormDataDetail? left, FormDataDetail? right) => !(left == right);
-        //}
+            SetCanSave();
+        }
     }
 }

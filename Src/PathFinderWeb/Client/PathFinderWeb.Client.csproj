@@ -20,8 +20,4 @@
     <ProjectReference Include="..\Shared\PathFinderWeb.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

@@ -34,9 +34,13 @@ namespace PathFinder.Cosmos.Store
 
             _container = container;
             _logger = logger;
+
+            Search = new SearchContainer<T>(_container, logger);
         }
 
         public string ContainerName => _container.Id;
+
+        public ISearchContainer<T> Search { get; }
 
         public Task<ETag> Set(T item, CancellationToken token = default) => Set(new Record<T>(item));
 
@@ -132,51 +136,9 @@ namespace PathFinder.Cosmos.Store
                 new KeyValuePair<string, string>("id", id)
             };
 
-            var result = await Search($"select * from ROOT r where r.id = \"@id\"", parameters, token);
+            var result = await Search.Query($"select * from ROOT r where r.id = \"@id\"", parameters, token);
 
             return result.Count > 0;
-        }
-
-        public Task<IReadOnlyList<T>> ListAll(CancellationToken token = default) => Search("select * from ROOT", token: token);
-
-        public async Task<IReadOnlyList<T>> Search(string sqlQuery, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken token = default)
-        {
-            sqlQuery.VerifyNotEmpty(nameof(sqlQuery));
-            parameters = parameters ?? Array.Empty<KeyValuePair<string, string>>();
-
-            try
-            {
-                var list = new List<T>();
-
-                _logger.LogTrace($"{nameof(Search)}: Query={sqlQuery.WithParameters(parameters)}");
-                var queryDefinition = new QueryDefinition(sqlQuery);
-
-                queryDefinition = parameters
-                    .Select(x => queryDefinition.WithParameter(decorateKey(x.Key), x.Value))
-                    .LastOrDefault()
-                    ?? queryDefinition;
-
-                using FeedIterator<T> feedIterator = _container.GetItemQueryIterator<T>(queryDefinition);
-
-                while (feedIterator.HasMoreResults)
-                {
-                    foreach (T item in await feedIterator.ReadNextAsync())
-                    {
-                        list.Add(item);
-                    }
-                }
-
-                _logger.LogTrace($"{nameof(Search)}: Query={sqlQuery.WithParameters(parameters)}, RecordCount={list.Count}");
-
-                return list;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning($"{nameof(Search)}: Error {ex.Message} for {sqlQuery}");
-                return Array.Empty<T>();
-            }
-
-            static string decorateKey(string key) => key.StartsWith("@") ? key : "@" + key;
         }
 
         private bool IsValid(HttpStatusCode httpStatusCode) => _validStatusCode.Contains((int)httpStatusCode);

@@ -28,13 +28,9 @@ namespace PathFinderWeb.Server
             services.AddRazorPages();
 
             services.AddSingleton<ContentService>();
-            services.AddSingleton<IJson, Json>();
 
-            IOption option = services
-                .BuildServiceProvider()
-                .GetRequiredService<IOption>();
-
-            services.AddHttpClient<LinkService>(client => client.BaseAddress = new Uri(option.PathFinderApiUrl));
+            string url = Configuration[nameof(Option.PathFinderApiUrl)];
+            services.AddHttpClient<LinkService>(client => client.BaseAddress = new Uri(url));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

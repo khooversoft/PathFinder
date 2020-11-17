@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using PathFinder.sdk.Actors;
+using PathFinder.sdk.Models;
 using PathFinder.sdk.Records;
 using PathFinder.sdk.Store;
 using System;
@@ -50,8 +51,9 @@ namespace PathFinder.sdk.Host.PathServices
             await actor.Delete(token);
         }
 
-        public async Task<IReadOnlyList<LinkRecord>> ListAll() => await _linkContainer.ListAll();
+        public async Task<IReadOnlyList<LinkRecord>> List(QueryParameters queryParameters, CancellationToken token = default) => await _linkContainer.Search.List(queryParameters, token);
 
-        public async Task<IReadOnlyList<LinkRecord>> Search(string sqlQuery, IEnumerable<KeyValuePair<string, string>>? parameters = null) => await _linkContainer.Search(sqlQuery, parameters);
+        public async Task<IReadOnlyList<LinkRecord>> Search(string sqlQuery, IEnumerable<KeyValuePair<string, string>>? parameters = null, CancellationToken token = default) =>
+            await _linkContainer.Search.Query(sqlQuery, parameters, token);
     }
 }

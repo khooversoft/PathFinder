@@ -27,6 +27,6 @@ namespace PathFinderWeb.Server.Services
 
         public async Task Delete(string id, CancellationToken token = default) => await _pathFinderClient.Link.Delete(id, token);
 
-        public async Task<BatchSet<LinkRecord>> List(int index = 0, int count = 1000, CancellationToken token = default) => await _pathFinderClient.Link.List(index, count, token);
+        public async Task<BatchSet<LinkRecord>> List(QueryParameters queryParameters, CancellationToken token = default) => await _pathFinderClient.Link.Query(queryParameters).ReadNext(token);
     }
 }

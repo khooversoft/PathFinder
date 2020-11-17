@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PathFinder.sdk.Models;
 using PathFinder.sdk.Services.RecordAbstract;
 using PathFinder.sdk.Store;
 using PathFinderCmd.Application;
@@ -46,7 +47,7 @@ namespace PathFinderCmd.Activities
 
         public async Task List(CancellationToken token)
         {
-            IReadOnlyList<T> list = await _recordContainer.ListAll(token);
+            IReadOnlyList<T> list = await _recordContainer.Search.List(QueryParameters.Default, token: token);
 
             _logger.LogInformation($"{nameof(List)}: Listing all {_entityName} records");
             foreach (var item in list)
@@ -64,7 +65,7 @@ namespace PathFinderCmd.Activities
         public async Task Clear(CancellationToken token)
         {
             _logger.LogInformation($"{nameof(Clear)}: Deleting ID={_option.Id}");
-            IReadOnlyList<T> list = await _recordContainer.ListAll(token);
+            IReadOnlyList<T> list = await _recordContainer.Search.List(QueryParameters.Default, token: token);
 
             foreach (var item in list)
             {

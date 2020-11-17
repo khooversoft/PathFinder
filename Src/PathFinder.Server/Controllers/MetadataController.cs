@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PathFinder.sdk.Host.PathServices;
+using PathFinder.sdk.Models;
 using PathFinder.sdk.Records;
 
 namespace PathFinder.Server.Controllers
@@ -46,16 +47,15 @@ namespace PathFinder.Server.Controllers
         }
 
         [HttpGet("list/{index?}/{count?}")]
-        public async Task<IActionResult> List(int index = 0, int count = 1000)
+        public async Task<IActionResult> List([FromQuery] QueryParameters listParameters)
         {
-            IReadOnlyList<MetadataRecord> list = await _metadataPathService.ListAll();
+            IReadOnlyList<MetadataRecord> list = await _metadataPathService.List(QueryParameters.Default);
+            int index = listParameters.Index + listParameters.Count;
 
-            var result = new
+            var result = new BatchSet<MetadataRecord>
             {
-                ContinuationUrl = $"api/metadata/list/{index + count}/{count}",
-                Records = list
-                    .Skip(index)
-                    .Take(count),
+                ContinuationUrl = $"api/link/list?{listParameters.WithIndex(index).ToQuery()}",
+                Records = list.ToArray(),
             };
 
             return Ok(result);

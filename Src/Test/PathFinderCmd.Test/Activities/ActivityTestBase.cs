@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using PathFinder.Cosmos.Store;
+using PathFinder.sdk.Models;
 using PathFinder.sdk.Services.RecordAbstract;
 using PathFinder.sdk.Store;
 using PathFinderCmd.Application;
@@ -90,7 +91,7 @@ namespace PathFinderCmd.Test.Activities
                 await container.Set(record);
             }
 
-            IReadOnlyList<T> readRecords = await container.ListAll();
+            IReadOnlyList<T> readRecords = await container.Search.List(QueryParameters.Default);
             readRecords.Should().NotBeNull();
             readRecords.Count.Should().Be(list.Count);
 
@@ -99,7 +100,7 @@ namespace PathFinderCmd.Test.Activities
             await Program.Main(programArgs);
 
             // Verify
-            IReadOnlyList<T> verifyReadRecords = await container.ListAll();
+            IReadOnlyList<T> verifyReadRecords = await container.Search.List(QueryParameters.Default);
             verifyReadRecords.Should().NotBeNull();
             verifyReadRecords.Count.Should().Be(0);
         }

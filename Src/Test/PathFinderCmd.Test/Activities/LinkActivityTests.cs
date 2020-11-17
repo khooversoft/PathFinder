@@ -12,7 +12,7 @@ namespace PathFinderCmd.Test.Activities
         }
 
         [Fact]
-        public async Task TestAgentFullLiveCycle_ShouldSucceeded() => await RunFullLifeCycleTests(() => new LinkRecord
+        public async Task TestAgentFullLifeCycle_ShouldSucceeded() => await RunFullLifeCycleTests(() => new LinkRecord
         {
             Id = "link_1",
             RedirectUrl = "http://redirect"

@@ -8,6 +8,19 @@
 <PageMenu MenuCollection="@MenuCollection" />
 
 <div class="mt-md-2">
+    <EditForm Model="@Context">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <InputText @bind-Value="@Context.SearchByIdUrl" type="text" class="form-control" id="partialId" placeholder="Filter by id or url..." @oninput="@(x => OnSearchChange(x.Value.ToString()))" />
+            </div>
+            <div class="col-md-3">
+                <InputText @bind-Value="@Context.SearchByTag" type="text" class="form-control" id="tag" placeholder="Filter by tags..." @oninput="@(x => OnSearchTagChange(x.Value.ToString()))" />
+            </div>
+            <div class="col-md-3">
+                <InputText @bind-Value="@Context.SearchByOwner" type="text" class="form-control" id="tag" placeholder="Filter by Owner..." @oninput="@(x => OnSearchOwnerChange(x.Value.ToString()))" />
+            </div>
+        </div>
+    </EditForm>
 
     @switch (Context.RunState)
     {
@@ -26,9 +39,10 @@
                 <div class="pl-3 pr-3">
                     <RadzenGrid AllowFiltering="false" AllowPaging="true" PageSize="20" AllowSorting="false" Data="@Context.Records" TItem="LinkRecord" ColumnWidth="200px" RowSelect="OnRowSelect">
                         <Columns>
-                            <RadzenGridColumn TItem="LinkRecord" Property="Id" Title="Id" Width="100px"/>
+                            <RadzenGridColumn TItem="LinkRecord" Property="Id" Title="Id" Width="100px" />
                             <RadzenGridColumn TItem="LinkRecord" Property="RedirectUrl" Title="Redirect to Url" />
-                            <RadzenGridColumn TItem="LinkRecord" Property="Enabled" Title="Enabled" Width="50px" />
+                            <RadzenGridColumn TItem="LinkRecord" Property="Owner" Title="Owner" Width="50px" />
+                            <RadzenGridColumn TItem="LinkRecord" Property="Enabled" Title="Enabled" Width="30px" />
                         </Columns>
                     </RadzenGrid>
                 </div>

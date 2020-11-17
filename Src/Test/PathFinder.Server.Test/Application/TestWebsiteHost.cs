@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PathFinder.Cosmos.Store.Application;
+using PathFinder.sdk.Application;
 using PathFinder.sdk.Client;
 using PathFinder.sdk.Store;
 using PathFinder.Server.Application;
@@ -28,9 +29,9 @@ namespace PathFinder.Server.Test.Application
 
         public PathFinderClient PathFinderClient => new PathFinderClient(Client, Resolve<ILoggerFactory>().CreateLogger<PathFinderClient>());
 
-        public TestWebsiteHost StartApiServer()
+        public TestWebsiteHost StartApiServer(RunEnvironment runEnvironment)
         {
-            IOption option = GetOption();
+            IOption option = GetOption(runEnvironment);
 
             var host = new HostBuilder()
                 .ConfigureWebHostDefaults(webBuilder =>
@@ -73,9 +74,9 @@ namespace PathFinder.Server.Test.Application
             }
         }
 
-        private IOption GetOption()
+        private IOption GetOption(RunEnvironment runEnvironment)
         {
-            string packageFile = FileTools.WriteResourceToTempFile("PathFinder.Server.Test", nameof(TestWebsiteHost), typeof(TestWebsiteHost), "PathFinder.Server.Test.Application.Config.json");
+            string packageFile = FileTools.WriteResourceToTempFile("PathFinder.Server.Test", nameof(TestWebsiteHost), typeof(TestWebsiteHost), GetResourceId());
             string[] args = new[]
             {
                 $"ConfigFile={packageFile}",
@@ -84,6 +85,14 @@ namespace PathFinder.Server.Test.Application
             return new OptionBuilder()
                 .SetArgs(args)
                 .Build();
+
+            string GetResourceId() => runEnvironment switch
+            {
+                RunEnvironment.Local => "PathFinder.Server.Test.Application.Local-Config.json",
+                RunEnvironment.Dev => "PathFinder.Server.Test.Application.Dev-Config.json",
+
+                _ => throw new InvalidOperationException($"{runEnvironment} is not supported"),
+            };
         }
 
         private static async Task InitializeDatabase(IHost host, IOption option)

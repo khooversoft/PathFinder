@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PathFinder.sdk.Host.PathServices;
 using PathFinder.sdk.Models;
 using PathFinder.sdk.Records;
+using Toolbox.Extensions;
 
 namespace PathFinder.Server.Controllers
 {
@@ -47,18 +49,16 @@ namespace PathFinder.Server.Controllers
             return Ok();
         }
 
-        [HttpGet("list/{index}/{count}")]
-        public async Task<IActionResult> List(int index, int count)
+        [HttpGet("list")]
+        public async Task<IActionResult> List([FromQuery] QueryParameters listParameters)
         {
-            IReadOnlyList<LinkRecord> list = await _linkPathService.ListAll();
+            IReadOnlyList<LinkRecord> list = await _linkPathService.List(listParameters);
+            int index = listParameters.Index + listParameters.Count;
 
             var result = new BatchSet<LinkRecord>
             {
-                ContinuationUrl = $"api/link/list/{index + count}/{count}",
-                Records = list
-                    .Skip(index)
-                    .Take(count)
-                    .ToArray(),
+                ContinuationUrl = $"api/link/list?{listParameters.WithIndex(index).ToQuery()}",
+                Records = list.ToArray(),
             };
 
             return Ok(result);

@@ -9,20 +9,26 @@
 <PageMenu MenuCollection="@MenuCollection" />
 
 <div class="mt-md-2">
+    @if (!ErrorMessage.IsEmpty())
+    {
+        <div class="alert alert-danger" role="alert">
+            @ErrorMessage
+        </div>
+    }
     <EditForm EditContext="@EditContext">
 
         <div class="simple-form">
             <div class="form-group row">
                 <label class="col-md-2" for="id">Id:</label>
                 <div class="col-md-10">
-                    <InputText @bind-Value="@FormData.Id" type="text" class="form-control" id="id" placeholder="Enter ID for link." disabled="@(!Id.IsEmpty())" />
+                    <InputText @bind-Value="@FormData.Id" type="text" class="form-control" id="id" placeholder="Enter ID for link." disabled="@(!Id.IsEmpty())" @oninput="@(x => OnChangeId(x.Value.ToString()))" />
                 </div>
             </div>
 
             <div class="form-group row">
                 <label class="col-md-2" for="url">Redirect URL:</label>
                 <div class="col-md-10">
-                    <InputText @bind-Value="FormData.RedirectUrl" type="text" class="form-control" id="url" placeholder="Enter the URL" />
+                    <InputText @bind-Value="FormData.RedirectUrl" type="text" class="form-control" id="url" placeholder="Enter the URL" @oninput="@(x => OnChangeRedirectUrl(x.Value.ToString()))" />
                 </div>
             </div>
 
@@ -30,6 +36,42 @@
                 <label class="col-md-2" for="url">Enabled:</label>
                 <div class="col-md-10">
                     <InputCheckbox @bind-Value="FormData.Enabled" />
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="form-group row">
+                <label class="col-md-2" for="url">Owner:</label>
+                <div class="col-md-10">
+                    <InputText @bind-Value="FormData.Owner" type="text" class="form-control" id="url" placeholder="Owner / contact" @oninput="@(x => OnChangeOwner(x.Value.ToString()))" />
+                </div>
+            </div>
+
+            <div class="form-group row mt-4">
+                <label class="col-md-2" for="url">Tags:</label>
+                <div class="col-md-10">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td>Name</td>
+                                <td>Value</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var line in FormData.Tags)
+                            {
+                                <tr>
+                                    <td>
+                                        <InputText @bind-Value="line.Key" type="text" class="form-control" @oninput="@(x => { line.Key = x.Value.ToString(); VerifyExtra(); })" />
+                                    </td>
+                                    <td>
+                                        <InputText @bind-Value="line.Value" type="text" class="form-control" @oninput="@(x => { line.Value = x.Value.ToString(); VerifyExtra(); })" />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
 

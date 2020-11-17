@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using PathFinder.sdk.Models;
 using PathFinder.sdk.Records;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Net.Mail;
 using System.Threading;
 using System.Threading.Tasks;
 using Toolbox.Tools;
@@ -58,11 +56,6 @@ namespace PathFinder.sdk.Client
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task<BatchSet<LinkRecord>> List(int index = 0, int count = 1000, CancellationToken token = default)
-        {
-            _logger.LogTrace($"{nameof(List)}: Index={index}");
-
-            return await _httpClient.GetFromJsonAsync<BatchSet<LinkRecord>>($"api/link/list/{index}/{count}", token);
-        }
+        public BatchSetCursor<LinkRecord> Query(QueryParameters queryParameters) => new BatchSetCursor<LinkRecord>(_httpClient, queryParameters, _logger);
     }
 }

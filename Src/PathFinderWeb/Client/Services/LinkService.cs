@@ -27,11 +27,11 @@ namespace PathFinderWeb.Client.Services
             return await _httpClient.GetFromJsonAsync<LinkRecord>($"api/link/{id}");
         }
 
-        public async Task<IReadOnlyList<LinkRecord>> List()
+        public async Task<IReadOnlyList<LinkRecord>> List(QueryParameters queryParameters)
         {
-            BatchSet<LinkRecord> result = await _httpClient.GetFromJsonAsync<BatchSet<LinkRecord>>("api/link/list/0/1000");
+            BatchSet<LinkRecord> result = await _httpClient.GetFromJsonAsync<BatchSet<LinkRecord>>($"api/link/list?{queryParameters.ToQuery()}");
             return result.Records;
-        }
+        } 
 
         public async Task Set(LinkRecord linkRecord)
         {
