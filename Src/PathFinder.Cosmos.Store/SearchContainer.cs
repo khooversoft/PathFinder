@@ -1,7 +1,6 @@
 ﻿using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using PathFinder.sdk.Models;
-using PathFinder.sdk.Services.RecordAbstract;
 using PathFinder.sdk.Store;
 using System;
 using System.Collections.Generic;
@@ -27,7 +26,7 @@ namespace PathFinder.Cosmos.Store
         {
             IReadOnlyList<string> tags = queryParameters.Tag
                 ?.Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                ?.Select(x => $"CONTAINS(n.Key, {x}, true)")
+                ?.Select(x => $"CONTAINS(n.Key, \"{x}\", true)")
                 ?.ToArray() ?? Array.Empty<string>();
 
             IReadOnlyList<string> restrictions = new string?[]
@@ -35,7 +34,7 @@ namespace PathFinder.Cosmos.Store
                 queryParameters.ToSqlIdSearch(),
                 queryParameters.ToSqlRedirectUrlSearch(),
                 queryParameters.ToSqlOwnerSearch(),
-                !queryParameters.Tag.IsEmpty() ? $"exists{Construct("n in r.Tags", tags)}" : null,
+                !queryParameters.Tag.IsEmpty() ? $"exists({Construct("n in r.Tags", tags)})" : null,
             }.Where(x => x != null)
             .ToArray()!;
 

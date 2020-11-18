@@ -43,7 +43,7 @@ namespace PathFinder.Server.Test
             LinkRecord? readResponse = await host.PathFinderClient.Link.Get(record.Id);
             readResponse.Should().NotBeNull();
 
-            BatchSet<LinkRecord>? list = await host.PathFinderClient.Link.Query(QueryParameters.Default).ReadNext();
+            BatchSet<LinkRecord>? list = await host.PathFinderClient.Link.List(QueryParameters.Default).ReadNext();
             list.Should().NotBeNull();
             list.Records.Count.Should().BeGreaterThan(0);
 
@@ -76,7 +76,7 @@ namespace PathFinder.Server.Test
                 await host.PathFinderClient.Link.Set(item);
             }
 
-            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.Query(QueryParameters.Default).ReadNext();
+            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(QueryParameters.Default).ReadNext();
             list.Should().NotBeNull();
             list.Records.Count.Should().Be(max);
 
@@ -116,7 +116,7 @@ namespace PathFinder.Server.Test
             int index = 0;
             while (aggList.Count < max)
             {
-                BatchSet<LinkRecord> list = await host.PathFinderClient.Link.Query(new QueryParameters { Index = index, Count = pageSize }).ReadNext();
+                BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(new QueryParameters { Index = index, Count = pageSize }).ReadNext();
                 list.Should().NotBeNull();
                 list.Records.Count.Should().Be(pageSize);
 
@@ -131,7 +131,7 @@ namespace PathFinder.Server.Test
                 .All(x => x.o == x.i)
                 .Should().BeTrue();
 
-            BatchSet<LinkRecord> finalList = await host.PathFinderClient.Link.Query(new QueryParameters { Index = index, Count = pageSize }).ReadNext();
+            BatchSet<LinkRecord> finalList = await host.PathFinderClient.Link.List(new QueryParameters { Index = index, Count = pageSize }).ReadNext();
             finalList.Should().NotBeNull();
             finalList.Records.Count.Should().Be(0);
 
@@ -159,17 +159,17 @@ namespace PathFinder.Server.Test
                 await host.PathFinderClient.Link.Set(item);
             }
 
-            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.Query(new QueryParameters { Id = "Z" }).ReadNext();
+            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "Z" }).ReadNext();
             list.Should().NotBeNull();
             list.Records.Should().NotBeNull();
             list.Records.Count.Should().Be(2);
 
-            list = await host.PathFinderClient.Link.Query(new QueryParameters { Id = "i" }).ReadNext();
+            list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "i" }).ReadNext();
             list.Should().NotBeNull();
             list.Records.Should().NotBeNull();
             list.Records.Count.Should().Be(32);
 
-            list = await host.PathFinderClient.Link.Query(new QueryParameters { Id = "n" }).ReadNext();
+            list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "n" }).ReadNext();
             list.Should().NotBeNull();
             list.Records.Should().NotBeNull();
             list.Records.Count.Should().Be(42);
@@ -200,37 +200,37 @@ namespace PathFinder.Server.Test
                 await host.PathFinderClient.Link.Set(item);
             }
 
-            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.Query(new QueryParameters { Id = "Z" }).ReadNext();
+            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "Z" }).ReadNext();
             list.Should().NotBeNull();
             list.Records.Should().NotBeNull();
             list.Records.Count.Should().Be(2);
 
-            list = await host.PathFinderClient.Link.Query(new QueryParameters { Id = "na" }).ReadNext();
+            list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "na" }).ReadNext();
             list.Should().NotBeNull();
             list.Records.Should().NotBeNull();
             list.Records.Count.Should().Be(8);
 
-            list = await host.PathFinderClient.Link.Query(new QueryParameters { RedirectUrl = "ee" }).ReadNext();
+            list = await host.PathFinderClient.Link.List(new QueryParameters { RedirectUrl = "ee" }).ReadNext();
             list.Should().NotBeNull();
             list.Records.Should().NotBeNull();
             list.Records.Count.Should().Be(5);
 
-            list = await host.PathFinderClient.Link.Query(new QueryParameters { RedirectUrl = "sa" }).ReadNext();
+            list = await host.PathFinderClient.Link.List(new QueryParameters { RedirectUrl = "sa" }).ReadNext();
             list.Should().NotBeNull();
             list.Records.Should().NotBeNull();
             list.Records.Count.Should().Be(3);
 
-            list = await host.PathFinderClient.Link.Query(new QueryParameters { Owner = "2" }).ReadNext();
+            list = await host.PathFinderClient.Link.List(new QueryParameters { Owner = "2" }).ReadNext();
             list.Should().NotBeNull();
             list.Records.Should().NotBeNull();
             list.Records.Count.Should().Be(10);
 
-            list = await host.PathFinderClient.Link.Query(new QueryParameters { Id = "Z", RedirectUrl = "sa" }).ReadNext();
+            list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "Z", RedirectUrl = "sa" }).ReadNext();
             list.Should().NotBeNull();
             list.Records.Should().NotBeNull();
             list.Records.Count.Should().Be(5);
 
-            list = await host.PathFinderClient.Link.Query(new QueryParameters { Id = "Z", RedirectUrl = "sa", Owner = "3" }).ReadNext();
+            list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "Z", RedirectUrl = "sa", Owner = "3" }).ReadNext();
             list.Should().NotBeNull();
             list.Records.Should().NotBeNull();
             list.Records.Count.Should().Be(13);
@@ -262,7 +262,7 @@ namespace PathFinder.Server.Test
             }
 
             var aggList = new List<LinkRecord>();
-            BatchSetCursor<LinkRecord> cursor = host.PathFinderClient.Link.Query(new QueryParameters { Index = 0, Count = pageSize });
+            BatchSetCursor<LinkRecord> cursor = host.PathFinderClient.Link.List(new QueryParameters { Index = 0, Count = pageSize });
 
             while (aggList.Count < max)
             {
@@ -289,7 +289,7 @@ namespace PathFinder.Server.Test
 
         private async Task DeleteAll(TestWebsiteHost host)
         {
-            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.Query(QueryParameters.Default).ReadNext();
+            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(QueryParameters.Default).ReadNext();
 
             foreach (var item in list.Records)
             {

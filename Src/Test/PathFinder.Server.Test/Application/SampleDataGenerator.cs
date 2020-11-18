@@ -18,7 +18,7 @@ namespace PathFinder.Server.Test.Application
             _testApplication = testApplication;
         }
 
-        [Fact]
+        //[Fact]
         public async Task GivenMultiLinkRecord_WhenFullLifeCycle_ShouldComplete()
         {
             TestWebsiteHost host = _testApplication.GetHost(RunEnvironment.Dev);
@@ -32,6 +32,9 @@ namespace PathFinder.Server.Test.Application
                     Id = x.name,
                     RedirectUrl = $"http://{x.site}/Document",
                     Owner = $"Owner_{i % 5}",
+                    Tags = Enumerable.Range(0, i % 3)
+                        .Select(x => new Tag($"Key_{x}", $"Value_{x}"))
+                        .ToList(),
                 })
                 .ToArray();
 
@@ -40,7 +43,7 @@ namespace PathFinder.Server.Test.Application
                 await host.PathFinderClient.Link.Set(item);
             }
 
-            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.Query(QueryParameters.Default).ReadNext();
+            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(QueryParameters.Default).ReadNext();
             list.Should().NotBeNull();
             list.Records.Count.Should().Be(half);
 
@@ -54,7 +57,7 @@ namespace PathFinder.Server.Test.Application
 
         private async Task DeleteAll(TestWebsiteHost host)
         {
-            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.Query(QueryParameters.Default).ReadNext();
+            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(QueryParameters.Default).ReadNext();
 
             foreach (var item in list.Records)
             {

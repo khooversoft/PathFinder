@@ -1,13 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using PathFinder.sdk.Models;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Toolbox.Tools;
 
 namespace PathFinder.sdk.Client
 {
@@ -34,10 +31,9 @@ namespace PathFinder.sdk.Client
 
         private async Task<BatchSet<T>> Start(CancellationToken token)
         {
-            string query = _queryParameters.ToQuery();
-            _logger.LogTrace($"{nameof(Start)}: Query={query}");
+            _logger.LogTrace($"{nameof(Start)}: Query={_queryParameters}");
 
-            Current = await _httpClient.GetFromJsonAsync<BatchSet<T>>($"api/link/list?{query}", token);
+            Current = await Post(_queryParameters);
             _getFunc = Continue;
 
             return Current;
@@ -45,12 +41,22 @@ namespace PathFinder.sdk.Client
 
         private async Task<BatchSet<T>> Continue(CancellationToken token)
         {
-            _logger.LogTrace($"{nameof(Continue)}: continuationUrl={Current!.ContinuationUrl}");
+            _logger.LogTrace($"{nameof(Continue)}: Query={_queryParameters}");
 
-            Current = await _httpClient.GetFromJsonAsync<BatchSet<T>>(Current!.ContinuationUrl, token);
+            QueryParameters queryParameters = _queryParameters.WithIndex(Current!.NextIndex);
+
+            Current = await Post(queryParameters);
+
             _getFunc = Continue;
-
             return Current;
+        }
+
+        private async Task<BatchSet<T>> Post(QueryParameters queryParameters)
+        {
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/link/list", queryParameters);
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<BatchSet<T>>();
         }
     }
 }

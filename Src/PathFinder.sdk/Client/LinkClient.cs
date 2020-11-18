@@ -56,6 +56,6 @@ namespace PathFinder.sdk.Client
             response.EnsureSuccessStatusCode();
         }
 
-        public BatchSetCursor<LinkRecord> Query(QueryParameters queryParameters) => new BatchSetCursor<LinkRecord>(_httpClient, queryParameters, _logger);
+        public BatchSetCursor<LinkRecord> List(QueryParameters queryParameters) => new BatchSetCursor<LinkRecord>(_httpClient, queryParameters, _logger);
     }
 }

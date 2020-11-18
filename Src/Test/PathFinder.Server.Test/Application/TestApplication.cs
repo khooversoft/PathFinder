@@ -9,9 +9,9 @@ namespace PathFinder.Server.Test.Application
 {
     public class TestApplication
     {
-        private static TestWebsiteHost? _currentHost;
-        private static RunEnvironment? _currentEnvironment;
-        private static object _lock = new object();
+        private TestWebsiteHost? _currentHost;
+        private RunEnvironment? _currentEnvironment;
+        private object _lock = new object();
 
         internal TestWebsiteHost GetHost(RunEnvironment runEnvironment = RunEnvironment.Local)
         {

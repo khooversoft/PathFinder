@@ -5,7 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Toolbox.Extensions;
 
-namespace PathFinder.sdk.Services.RecordAbstract
+namespace PathFinder.sdk.Models
 {
     public class RecordBase
     {

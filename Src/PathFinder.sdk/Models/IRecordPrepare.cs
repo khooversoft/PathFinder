@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PathFinder.sdk.Services.RecordAbstract
+namespace PathFinder.sdk.Models
 {
     public interface IRecordPrepare
     {

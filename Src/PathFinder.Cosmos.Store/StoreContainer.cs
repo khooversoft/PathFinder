@@ -1,7 +1,7 @@
 ﻿using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using PathFinder.Cosmos.Store.Application;
-using PathFinder.sdk.Services.RecordAbstract;
+using PathFinder.sdk.Models;
 using PathFinder.sdk.Store;
 using System;
 using System.Threading;

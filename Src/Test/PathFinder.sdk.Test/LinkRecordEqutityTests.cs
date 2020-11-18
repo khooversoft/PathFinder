@@ -1,6 +1,6 @@
 using FluentAssertions;
+using PathFinder.sdk.Models;
 using PathFinder.sdk.Records;
-using PathFinder.sdk.Services.RecordAbstract;
 using System;
 using System.Collections.Generic;
 using Xunit;

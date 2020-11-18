@@ -1,10 +1,9 @@
-﻿using PathFinder.sdk.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Toolbox.Tools;
 
-namespace PathFinder.sdk.Services.RecordAbstract
+namespace PathFinder.sdk.Models
 {
     public class Record<T> : IRecordPrepare where T : IRecord
     {

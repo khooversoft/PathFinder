@@ -6,7 +6,9 @@ namespace PathFinder.sdk.Models
 {
     public class BatchSet<T>
     {
-        public string ContinuationUrl { get; set; } = null!;
+        public QueryParameters QueryParameters { get; set; } = null!;
+
+        public int NextIndex { get; set; }
 
         public IReadOnlyList<T> Records { get; set; } = null!;
     }

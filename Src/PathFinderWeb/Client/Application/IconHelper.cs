@@ -19,6 +19,7 @@ namespace PathFinderWeb.Client.Application
         public static Icon List { get; } = new Icon("oi-list", _normalCode, _normalCode);
         public static Icon Create { get; } = new Icon("oi-pencil ", _blueCode, _disableCode);
         public static Icon Reload { get; } = new Icon("oi-reload", _normalCode, _normalCode);
+        public static Icon Reset { get; } = new Icon("oi-ban", _normalCode, _normalCode);
 
         public static Icon Cancel { get; } = new Icon("oi-x", _normalCode, _disableCode);
         public static Icon Add { get; } = new Icon("oi-plus ", _blueCode, _disableCode);

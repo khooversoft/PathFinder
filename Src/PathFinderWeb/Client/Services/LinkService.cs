@@ -1,11 +1,8 @@
 ﻿using PathFinder.sdk.Models;
 using PathFinder.sdk.Records;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Net.Mail;
 using System.Threading.Tasks;
 using Toolbox.Tools;
 
@@ -20,6 +17,14 @@ namespace PathFinderWeb.Client.Services
             _httpClient = httpClient;
         }
 
+        public async Task Delete(string id)
+        {
+            id.VerifyNotEmpty(nameof(id));
+
+            HttpResponseMessage response = await _httpClient.DeleteAsync($"api/link/{id}");
+            response.EnsureSuccessStatusCode();
+        }
+
         public async Task<LinkRecord> Get(string id)
         {
             id.VerifyNotEmpty(nameof(id));
@@ -29,23 +34,18 @@ namespace PathFinderWeb.Client.Services
 
         public async Task<IReadOnlyList<LinkRecord>> List(QueryParameters queryParameters)
         {
-            BatchSet<LinkRecord> result = await _httpClient.GetFromJsonAsync<BatchSet<LinkRecord>>($"api/link/list?{queryParameters.ToQuery()}");
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/link/list", queryParameters);
+            response.EnsureSuccessStatusCode();
+
+            BatchSet<LinkRecord> result = await response.Content.ReadFromJsonAsync<BatchSet<LinkRecord>>();
             return result.Records;
-        } 
+        }
 
         public async Task Set(LinkRecord linkRecord)
         {
             linkRecord.VerifyNotNull(nameof(linkRecord));
 
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/link", linkRecord);
-            response.EnsureSuccessStatusCode();
-        }
-
-        public async Task Delete(string id)
-        {
-            id.VerifyNotEmpty(nameof(id));
-
-            HttpResponseMessage response = await _httpClient.DeleteAsync($"api/link/{id}");
             response.EnsureSuccessStatusCode();
         }
     }

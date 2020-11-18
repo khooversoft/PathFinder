@@ -50,11 +50,11 @@ namespace PathFinder.Server.Controllers
         public async Task<IActionResult> List([FromQuery] QueryParameters listParameters)
         {
             IReadOnlyList<MetadataRecord> list = await _metadataPathService.List(QueryParameters.Default);
-            int index = listParameters.Index + listParameters.Count;
 
             var result = new BatchSet<MetadataRecord>
             {
-                ContinuationUrl = $"api/link/list?{listParameters.WithIndex(index).ToQuery()}",
+                QueryParameters = listParameters,
+                NextIndex = listParameters.Index + listParameters.Count,
                 Records = list.ToArray(),
             };
 

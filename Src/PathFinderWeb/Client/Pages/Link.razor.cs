@@ -55,6 +55,7 @@ namespace PathFinderWeb.Client.Pages
                 new MenuItem("Create", NavigationHelper.NewLinkPage(), IconHelper.Create, true),
                 new MenuDivider(),
                 new MenuButton("Refresh", async () => await GetLinks(), IconHelper.Reload, true),
+                new MenuButton("Clear search", ResetSearch, IconHelper.Reset, true),
             };
         }
 
@@ -100,6 +101,15 @@ namespace PathFinderWeb.Client.Pages
             linkRecord.VerifyNotNull(nameof(linkRecord));
 
             NavigationManager.NavigateTo(NavigationHelper.EditLinkPage(linkRecord.Id));
+        }
+
+        private async Task ResetSearch()
+        {
+            Context.SearchByIdUrl = null;
+            Context.SearchByOwner = null;
+            Context.SearchByTag = null;
+
+            await GetLinks();
         }
 
         private void OnSearchChange(string value) => _delayAction.Post(() => _actionQueue.Post(() => Context.SearchByIdUrl = value));
