@@ -7,8 +7,6 @@ namespace PathFinder.Server.Application
 {
     internal class Option : IOption
     {
-        public Option() { }
-
         public string? ConfigFile { get; set; }
         public string? LogFolder { get; set; }
         public string? ContinuationHost { get; set; }

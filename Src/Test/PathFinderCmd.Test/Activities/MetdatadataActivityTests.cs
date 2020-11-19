@@ -1,4 +1,5 @@
-﻿using PathFinder.sdk.Records;
+﻿using PathFinder.sdk.Models;
+using PathFinder.sdk.Records;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -15,12 +16,12 @@ namespace PathFinderCmd.Test.Activities
         [Fact]
         public async Task TestTargetFullLiveCycle_ShouldSucceeded() => await RunFullLifeCycleTests(() => new MetadataRecord
         {
-            Id = "Metadata_1",
-            Properties = new Dictionary<string, string>
+            Id = "metadata_1",
+            Properties = new[]
             {
-                ["key1"] = "value1",
-                ["key2"] = "value2",
-            }
+                new KeyValue("key1", "value1"),
+                new KeyValue("key2", "value2"),
+            },
         });
 
         [Fact]
@@ -29,12 +30,12 @@ namespace PathFinderCmd.Test.Activities
         [Fact]
         public async Task ClearCollectionTest() => await TestClearCollection(x => new MetadataRecord
         {
-            Id = $"Metadata_{x}",
-            Properties = new Dictionary<string, string>
+            Id = $"metadata_{x}",
+            Properties = new[]
             {
-                ["key1"] = "value1",
-                ["key2"] = "value2",
-            }
+                new KeyValue("key1", "value1"),
+                new KeyValue("key2", "value2"),
+            },
         }, 10);
 
     }

@@ -30,7 +30,7 @@ namespace PathFinder.sdk.Client
             {
                 return await _httpClient.GetFromJsonAsync<MetadataRecord>($"api/metadata/{id}", token);
             }
-            catch(HttpRequestException ex)
+            catch (HttpRequestException ex)
             {
                 _logger.LogError(ex, $"{nameof(Get)}: id={id} failed");
                 return null;
@@ -48,20 +48,15 @@ namespace PathFinder.sdk.Client
             await _httpClient.PostAsJsonAsync("api/metadata", metadataRecord, token);
         }
 
-        public async Task Delete(string id, CancellationToken token = default)
+        public async Task<bool> Delete(string id, CancellationToken token = default)
         {
             id.VerifyNotEmpty(nameof(id));
             _logger.LogTrace($"{nameof(Delete)}: Id={id}");
 
             HttpResponseMessage? response = await _httpClient.DeleteAsync($"api/metadata/{id}");
-            response.EnsureSuccessStatusCode();
+            return response.IsSuccessStatusCode;
         }
 
-        public async Task<BatchSet<MetadataRecord>> List(int index = 0, int count = 1000, CancellationToken token = default)
-        {
-            _logger.LogTrace($"{nameof(List)}: Index={index}");
-
-            return await _httpClient.GetFromJsonAsync<BatchSet<MetadataRecord>>($"api/metadata/list/{index}/{count}", token);
-        }
+        public BatchSetCursor<MetadataRecord> List(QueryParameters queryParameters) => new BatchSetCursor<MetadataRecord>(_httpClient, queryParameters, _logger);
     }
 }

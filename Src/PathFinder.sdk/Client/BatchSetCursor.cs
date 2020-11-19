@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
+using PathFinder.sdk.Application;
 using PathFinder.sdk.Models;
 using System;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Toolbox.Extensions;
 
 namespace PathFinder.sdk.Client
 {
@@ -14,6 +16,7 @@ namespace PathFinder.sdk.Client
         private readonly HttpClient _httpClient;
         private readonly QueryParameters _queryParameters;
         private readonly ILogger _logger;
+        private readonly string _containerName;
         private Func<CancellationToken, Task<BatchSet<T>>> _getFunc;
 
         public BatchSetCursor(HttpClient httpClient, QueryParameters queryParameters, ILogger logger)
@@ -21,6 +24,7 @@ namespace PathFinder.sdk.Client
             _httpClient = httpClient;
             _queryParameters = queryParameters;
             _logger = logger;
+            _containerName = typeof(T).GetContainerName();
 
             _getFunc = Start;
         }
@@ -53,7 +57,7 @@ namespace PathFinder.sdk.Client
 
         private async Task<BatchSet<T>> Post(QueryParameters queryParameters)
         {
-            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/link/list", queryParameters);
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync($"api/{_containerName}/list", queryParameters);
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<BatchSet<T>>();

@@ -1,29 +1,22 @@
 ﻿using PathFinder.sdk.Application;
 using System;
-using System.Collections.Generic;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace PathFinder.Server.Test.Application
 {
-    public class TestApplication
+    public static class TestApplication
     {
-        private TestWebsiteHost? _currentHost;
-        private RunEnvironment? _currentEnvironment;
-        private object _lock = new object();
+        internal static TestHost DefaultHost { get; } = new TestHost(RunEnvironment.Local);
 
-        internal TestWebsiteHost GetHost(RunEnvironment runEnvironment = RunEnvironment.Local)
+        internal static TestHost SearchHost { get; } = new TestHost(RunEnvironment.Local, "dev.pathFinder-test-search");
+
+        internal static TestHost DevHost { get; } = new TestHost(RunEnvironment.Dev);
+
+        public static void Shutdown()
         {
-            lock (_lock)
-            {
-                if (runEnvironment != _currentEnvironment) ShutdownHost();
-
-                _currentEnvironment = runEnvironment;
-                return _currentHost = _currentHost ?? new TestWebsiteHost().StartApiServer(runEnvironment);
-            }
+            DefaultHost.ShutdownHost();
+            SearchHost.ShutdownHost();
+            DevHost.ShutdownHost();
         }
-
-        internal void ShutdownHost() => Interlocked.Exchange(ref _currentHost, null)?.Shutdown();
     }
 }

@@ -75,8 +75,8 @@ namespace PathFinderCmd.Test.Activities
             // Clear records
             var args = new[]
             {
-                    _entityName,
-                    "Clear",
+                _entityName,
+                "Clear",
             };
 
             TestConfiguration testConfiguration = new TestConfiguration();

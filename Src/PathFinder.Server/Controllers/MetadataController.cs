@@ -46,10 +46,10 @@ namespace PathFinder.Server.Controllers
             return Ok();
         }
 
-        [HttpGet("list/{index?}/{count?}")]
-        public async Task<IActionResult> List([FromQuery] QueryParameters listParameters)
+        [HttpPost("list")]
+        public async Task<IActionResult> List([FromBody] QueryParameters listParameters)
         {
-            IReadOnlyList<MetadataRecord> list = await _metadataPathService.List(QueryParameters.Default);
+            IReadOnlyList<MetadataRecord> list = await _metadataPathService.List(listParameters);
 
             var result = new BatchSet<MetadataRecord>
             {

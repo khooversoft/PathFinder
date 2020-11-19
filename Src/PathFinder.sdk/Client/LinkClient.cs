@@ -47,13 +47,13 @@ namespace PathFinder.sdk.Client
             await _httpClient.PostAsJsonAsync("api/link", linkRecord, token);
         }
 
-        public async Task Delete(string id, CancellationToken token = default)
+        public async Task<bool> Delete(string id, CancellationToken token = default)
         {
             id.VerifyNotEmpty(nameof(id));
             _logger.LogTrace($"{nameof(Delete)}: Id={id}");
 
             HttpResponseMessage response = await _httpClient.DeleteAsync($"api/link/{id}", token);
-            response.EnsureSuccessStatusCode();
+            return response.IsSuccessStatusCode;
         }
 
         public BatchSetCursor<LinkRecord> List(QueryParameters queryParameters) => new BatchSetCursor<LinkRecord>(_httpClient, queryParameters, _logger);

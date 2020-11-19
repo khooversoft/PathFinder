@@ -4,11 +4,11 @@ using System.Text;
 
 namespace PathFinder.sdk.Models
 {
-    public class Tag
+    public class KeyValue
     {
-        public Tag() { }
+        public KeyValue() { }
 
-        public Tag(string key, string value)
+        public KeyValue(string key, string value)
         {
             Key = key;
             Value = value;
@@ -20,15 +20,15 @@ namespace PathFinder.sdk.Models
 
         public override bool Equals(object? obj)
         {
-            return obj is Tag tag &&
+            return obj is KeyValue tag &&
                    Key == tag.Key &&
                    Value == tag.Value;
         }
 
         public override int GetHashCode() => HashCode.Combine(Key, Value);
 
-        public static bool operator ==(Tag? left, Tag? right) => EqualityComparer<Tag>.Default.Equals(left!, right!);
+        public static bool operator ==(KeyValue? left, KeyValue? right) => EqualityComparer<KeyValue>.Default.Equals(left!, right!);
 
-        public static bool operator !=(Tag? left, Tag? right) => !(left == right);
+        public static bool operator !=(KeyValue? left, KeyValue? right) => !(left == right);
     }
 }

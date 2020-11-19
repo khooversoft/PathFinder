@@ -13,11 +13,11 @@ using Xunit;
 
 namespace PathFinder.Server.Test
 {
-    public class LinkServiceSearchTests
+    public class MetadataServiceSearchTests
     {
-        public LinkServiceSearchTests()
+        public MetadataServiceSearchTests()
         {
-            TestApplication.SearchHost.EnqueueState(nameof(LinkServiceSearchTests), _ => CreateDataSet());
+            TestApplication.SearchHost.EnqueueState(nameof(MetadataServiceSearchTests), _ => CreateDataSet());
         }
 
         [Fact]
@@ -27,35 +27,16 @@ namespace PathFinder.Server.Test
             TestWebsiteHost host = await TestApplication.SearchHost.GetHost();
 
             // Act / Assert
-            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "Z" }).ReadNext();
+            BatchSet<MetadataRecord> list = await host.PathFinderClient.Metadata.List(new QueryParameters { Id = "Z" }).ReadNext();
             list.Should().NotBeNull();
             list.Records.Should().NotBeNull();
             list.Records.Count.Should().Be(2);
 
             // Act / Assert
-            list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "na" }).ReadNext();
+            list = await host.PathFinderClient.Metadata.List(new QueryParameters { Id = "na" }).ReadNext();
             list.Should().NotBeNull();
             list.Records.Should().NotBeNull();
             list.Records.Count.Should().Be(8);
-        }
-
-        [Fact]
-        public async Task GivenMultiLinkRecord_WhenSearchedRedirectUrl_ShouldComplete()
-        {
-            // Arrange
-            TestWebsiteHost host = await TestApplication.SearchHost.GetHost();
-
-            // Act / Assert
-            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(new QueryParameters { RedirectUrl = "ee" }).ReadNext();
-            list.Should().NotBeNull();
-            list.Records.Should().NotBeNull();
-            list.Records.Count.Should().Be(5);
-
-            // Act / Assert
-            list = await host.PathFinderClient.Link.List(new QueryParameters { RedirectUrl = "sa" }).ReadNext();
-            list.Should().NotBeNull();
-            list.Records.Should().NotBeNull();
-            list.Records.Count.Should().Be(3);
         }
 
         [Fact]
@@ -65,7 +46,7 @@ namespace PathFinder.Server.Test
             TestWebsiteHost host = await TestApplication.SearchHost.GetHost();
 
             // Act
-            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(new QueryParameters { Owner = "2" }).ReadNext();
+            BatchSet<MetadataRecord> list = await host.PathFinderClient.Metadata.List(new QueryParameters { Owner = "2" }).ReadNext();
 
             // Assert
             list.Should().NotBeNull();
@@ -80,27 +61,12 @@ namespace PathFinder.Server.Test
             TestWebsiteHost host = await TestApplication.SearchHost.GetHost();
 
             // Act
-            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(new QueryParameters { Tag = "1" }).ReadNext();
+            BatchSet<MetadataRecord> list = await host.PathFinderClient.Metadata.List(new QueryParameters { Tag = "1" }).ReadNext();
 
             // Assert
             list.Should().NotBeNull();
             list.Records.Should().NotBeNull();
             list.Records.Count.Should().Be(16);
-        }
-
-        [Fact]
-        public async Task GivenMultiLinkRecord_WhenSearchedBothIdAndRedirectUrl_ShouldComplete()
-        {
-            // Arrange
-            TestWebsiteHost host = await TestApplication.SearchHost.GetHost();
-
-            // Act
-            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "Z", RedirectUrl = "sa" }).ReadNext();
-
-            // Assert
-            list.Should().NotBeNull();
-            list.Records.Should().NotBeNull();
-            list.Records.Count.Should().Be(5);
         }
 
         [Fact]
@@ -110,12 +76,12 @@ namespace PathFinder.Server.Test
             TestWebsiteHost host = await TestApplication.SearchHost.GetHost();
 
             // Act
-            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "Z", RedirectUrl = "sa", Owner = "3" }).ReadNext();
+            BatchSet<MetadataRecord> list = await host.PathFinderClient.Metadata.List(new QueryParameters { Id = "sa", Owner = "3" }).ReadNext();
 
             // Assert
             list.Should().NotBeNull();
             list.Records.Should().NotBeNull();
-            list.Records.Count.Should().Be(13);
+            list.Records.Count.Should().Be(14);
         }
 
         [Fact]
@@ -125,12 +91,12 @@ namespace PathFinder.Server.Test
             TestWebsiteHost host = await TestApplication.SearchHost.GetHost();
 
             // Act
-            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "Z", RedirectUrl = "sa", Owner = "3", Tag = "2" }).ReadNext();
+            BatchSet<MetadataRecord> list = await host.PathFinderClient.Metadata.List(new QueryParameters { Id = "Z", Owner = "3", Tag = "2" }).ReadNext();
 
             // Assert
             list.Should().NotBeNull();
             list.Records.Should().NotBeNull();
-            list.Records.Count.Should().Be(13);
+            list.Records.Count.Should().Be(11);
         }
 
         private async Task CreateDataSet()
@@ -139,13 +105,17 @@ namespace PathFinder.Server.Test
             await DeleteAll(host);
 
             int half = TestData.RandomNames.Count / 2;
-            IReadOnlyList<LinkRecord> records = TestData.RandomNames.Take(half)
+            IReadOnlyList<MetadataRecord> records = TestData.RandomNames.Take(half)
                 .Zip(TestData.RandomNames.Skip(half), (name, site) => (name, site))
-                .Select((x, i) => new LinkRecord
+                .Select((x, i) => new MetadataRecord
                 {
                     Id = x.name,
-                    RedirectUrl = $"http://{x.site}/Document",
                     Owner = $"Owner_{i % 5}",
+
+                    Properties = Enumerable.Range(0, i % 3)
+                        .Select(x => new KeyValue($"PropertyKey_{x}", $"PropertyValue_{x}"))
+                        .ToList(),
+
                     Tags = Enumerable.Range(0, i % 3)
                         .Select(x => new KeyValue($"Key_{x}", $"Value_{x}"))
                         .ToList(),
@@ -154,17 +124,17 @@ namespace PathFinder.Server.Test
 
             foreach (var item in records)
             {
-                await host.PathFinderClient.Link.Set(item);
+                await host.PathFinderClient.Metadata.Set(item);
             }
         }
 
         private async Task DeleteAll(TestWebsiteHost host)
         {
-            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(QueryParameters.Default).ReadNext();
+            BatchSet<MetadataRecord> list = await host.PathFinderClient.Metadata.List(QueryParameters.Default).ReadNext();
 
             foreach (var item in list.Records)
             {
-                await host.PathFinderClient.Link.Delete(item.Id);
+                await host.PathFinderClient.Metadata.Delete(item.Id);
             }
         }
     }

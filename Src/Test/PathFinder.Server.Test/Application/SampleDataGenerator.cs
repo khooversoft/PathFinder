@@ -9,19 +9,12 @@ using Xunit;
 
 namespace PathFinder.Server.Test.Application
 {
-    public class SampleDataGenerator : IClassFixture<TestApplication>
+    public class SampleDataGenerator
     {
-        private readonly TestApplication _testApplication;
-
-        public SampleDataGenerator(TestApplication testApplication)
-        {
-            _testApplication = testApplication;
-        }
-
         //[Fact]
         public async Task GivenMultiLinkRecord_WhenFullLifeCycle_ShouldComplete()
         {
-            TestWebsiteHost host = _testApplication.GetHost(RunEnvironment.Dev);
+            TestWebsiteHost host = await TestApplication.DevHost.GetHost();
             await DeleteAll(host);
 
             int half = TestData.RandomNames.Count / 2;
@@ -33,7 +26,7 @@ namespace PathFinder.Server.Test.Application
                     RedirectUrl = $"http://{x.site}/Document",
                     Owner = $"Owner_{i % 5}",
                     Tags = Enumerable.Range(0, i % 3)
-                        .Select(x => new Tag($"Key_{x}", $"Value_{x}"))
+                        .Select(x => new KeyValue($"Key_{x}", $"Value_{x}"))
                         .ToList(),
                 })
                 .ToArray();
@@ -51,8 +44,6 @@ namespace PathFinder.Server.Test.Application
                 .Zip(list.Records, (o, i) => (o, i))
                 .All(x => x.o == x.i)
                 .Should().BeTrue();
-
-            //await DeleteAll(host);
         }
 
         private async Task DeleteAll(TestWebsiteHost host)

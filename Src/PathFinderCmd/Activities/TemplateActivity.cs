@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PathFinder.sdk.Models;
 using PathFinder.sdk.Records;
 using PathFinderCmd.Application;
 using System.Collections.Generic;
@@ -54,11 +55,11 @@ namespace PathFinderCmd.Activities
             var record = new MetadataRecord
             {
                 Id = $"Metadata_{index}",
-                Properties = new Dictionary<string, string>
+                Properties = new[]
                 {
-                    ["key1"] = "value1",
-                    ["key2"] = "value2",
-                }
+                    new KeyValue("key1", "value1"),
+                    new KeyValue("key2", "value2"),
+                },
             };
 
             File.WriteAllText(file, _json.Serialize(record));

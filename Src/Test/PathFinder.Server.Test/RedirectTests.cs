@@ -12,19 +12,12 @@ using Xunit;
 
 namespace PathFinder.Server.Test
 {
-    public class RedirectTests : IClassFixture<TestApplication>
+    public class RedirectTests
     {
-        private readonly TestApplication _testApplication;
-
-        public RedirectTests(TestApplication testApplication)
-        {
-            _testApplication = testApplication;
-        }
-
         [Fact]
         public async Task GivenLinkRecord_WhenRedirect_ReturnsRedirect()
         {
-            TestWebsiteHost host = _testApplication.GetHost();
+            TestWebsiteHost host = await TestApplication.DefaultHost.GetHost();
 
             const string id = "relnk0001";
             const string redirectUrl = "http://localhost:5003/Document";

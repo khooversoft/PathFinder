@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using Toolbox.Extensions;
 
 namespace PathFinder.sdk.Models
 {
-    public class RecordBase
+    public class RecordBase : IRecordPrepare
     {
-        public RecordBase() { }
+        public RecordBase()
+        {
+        }
 
         protected RecordBase(string recordType) => RecordType = recordType;
 
@@ -17,6 +17,7 @@ namespace PathFinder.sdk.Models
         {
             RecordType = recordBase.RecordType;
             Owner = recordBase.Owner;
+            Note = recordBase.Note;
 
             Tags = recordBase.Tags
                 ?.Where(x => !x.Key.IsEmpty() && !x.Value.IsEmpty())
@@ -25,25 +26,36 @@ namespace PathFinder.sdk.Models
                 ?.ToList() ?? Tags;
         }
 
-        public string RecordType { get; set; } = null!;
-
-        public IList<Tag> Tags { get; set; } = new List<Tag>();
-
+        public bool Enabled { get; set; } = true;
+        public string? Note { get; set; }
         public string? Owner { get; set; }
+        public string RecordType { get; set; } = null!;
+        public IList<KeyValue> Tags { get; set; } = new List<KeyValue>();
 
         public override bool Equals(object? obj)
         {
             return obj is RecordBase subject &&
-                   RecordType == subject.RecordType &&
-                   Tags.Count == subject.Tags.Count &&
-                   !Tags.Except(subject.Tags).Any() &&
-                   Owner == subject.Owner;
+                RecordType == subject.RecordType &&
+                Enabled == subject.Enabled &&
+                Owner == subject.Owner &&
+                Note == subject.Note &&
+                Tags.Count == subject.Tags.Count &&
+                !Tags.Except(subject.Tags).Any();
         }
 
         public override int GetHashCode() => HashCode.Combine(RecordType, Tags, Owner);
 
-        public static bool operator ==(RecordBase? left, RecordBase? right) => EqualityComparer<RecordBase>.Default.Equals(left!, right!);
+        public virtual void Prepare()
+        {
+            Tags = Tags
+                ?.Where(x => !x.Key.IsEmpty() && !x.Value.IsEmpty())
+                ?.GroupBy(x => x.Key, StringComparer.OrdinalIgnoreCase)
+                ?.Select(x => x.First())
+                ?.ToList() ?? new List<KeyValue>();
+        }
 
         public static bool operator !=(RecordBase? left, RecordBase? right) => !(left == right);
+
+        public static bool operator ==(RecordBase? left, RecordBase? right) => EqualityComparer<RecordBase>.Default.Equals(left!, right!);
     }
 }

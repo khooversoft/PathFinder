@@ -12,19 +12,12 @@ using Xunit;
 
 namespace PathFinder.Server.Test
 {
-    public class LinkServiceTests : IClassFixture<TestApplication>
+    public class LinkServiceTests
     {
-        private readonly TestApplication _testApplication;
-
-        public LinkServiceTests(TestApplication testApplication)
-        {
-            _testApplication = testApplication;
-        }
-
         [Fact]
         public async Task GivenLinkRecord_WhenFullLifeCycle_ShouldComplete()
         {
-            TestWebsiteHost host = _testApplication.GetHost();
+            TestWebsiteHost host = await TestApplication.DefaultHost.GetHost();
 
             const string id = "lnk0001";
             const string redirectUrl = "http://localhost:5003/Document";
@@ -42,10 +35,7 @@ namespace PathFinder.Server.Test
             await host.PathFinderClient.Link.Set(record);
             LinkRecord? readResponse = await host.PathFinderClient.Link.Get(record.Id);
             readResponse.Should().NotBeNull();
-
-            BatchSet<LinkRecord>? list = await host.PathFinderClient.Link.List(QueryParameters.Default).ReadNext();
-            list.Should().NotBeNull();
-            list.Records.Count.Should().BeGreaterThan(0);
+            (record == readResponse).Should().BeTrue();
 
             await host.PathFinderClient.Link.Delete(record.Id);
 
@@ -56,8 +46,10 @@ namespace PathFinder.Server.Test
         [Fact]
         public async Task GivenMultiLinkRecord_WhenFullLifeCycle_ShouldComplete()
         {
-            TestWebsiteHost host = _testApplication.GetHost();
-            await DeleteAll(host);
+            TestWebsiteHost host = await TestApplication.DefaultHost.GetHost();
+
+            const string testPrefix = "test01-";
+            await DeleteAll(host, testPrefix);
 
             const int max = 100;
             const string redirectUrl = "http://localhost:5003/Document";
@@ -65,7 +57,7 @@ namespace PathFinder.Server.Test
             IReadOnlyList<LinkRecord> records = Enumerable.Range(0, max)
                 .Select(x => new LinkRecord
                 {
-                    Id = $"lnk_{x}",
+                    Id = $"{testPrefix}lnk_{x}",
                     RedirectUrl = redirectUrl,
                     Owner = $"Owner_{x}",
                 })
@@ -76,7 +68,7 @@ namespace PathFinder.Server.Test
                 await host.PathFinderClient.Link.Set(item);
             }
 
-            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(QueryParameters.Default).ReadNext();
+            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(new QueryParameters { Id = testPrefix }).ReadNext();
             list.Should().NotBeNull();
             list.Records.Count.Should().Be(max);
 
@@ -84,15 +76,15 @@ namespace PathFinder.Server.Test
                 .Zip(list.Records, (o, i) => (o, i))
                 .All(x => x.o == x.i)
                 .Should().BeTrue();
-
-            await DeleteAll(host);
         }
 
         [Fact]
-        public async Task GivenMultiLinkRecord_WhenPaged_ShouldComplete()
+        public async Task GivenMultiLinkRecord_WhenManuallyPaged_ShouldComplete()
         {
-            TestWebsiteHost host = _testApplication.GetHost();
-            await DeleteAll(host);
+            TestWebsiteHost host = await TestApplication.DefaultHost.GetHost();
+
+            const string testPrefix = "test02-";
+            await DeleteAll(host, testPrefix);
 
             const int max = 100;
             const int pageSize = 10;
@@ -101,7 +93,7 @@ namespace PathFinder.Server.Test
             IReadOnlyList<LinkRecord> records = Enumerable.Range(0, max)
                 .Select(x => new LinkRecord
                 {
-                    Id = $"lnk_{x}",
+                    Id = $"{testPrefix}lnk_{x}",
                     RedirectUrl = redirectUrl
                 })
                 .ToArray();
@@ -116,7 +108,7 @@ namespace PathFinder.Server.Test
             int index = 0;
             while (aggList.Count < max)
             {
-                BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(new QueryParameters { Index = index, Count = pageSize }).ReadNext();
+                BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(new QueryParameters { Id = testPrefix, Index = index, Count = pageSize }).ReadNext();
                 list.Should().NotBeNull();
                 list.Records.Count.Should().Be(pageSize);
 
@@ -131,118 +123,18 @@ namespace PathFinder.Server.Test
                 .All(x => x.o == x.i)
                 .Should().BeTrue();
 
-            BatchSet<LinkRecord> finalList = await host.PathFinderClient.Link.List(new QueryParameters { Index = index, Count = pageSize }).ReadNext();
+            BatchSet<LinkRecord> finalList = await host.PathFinderClient.Link.List(new QueryParameters { Id = testPrefix, Index = index, Count = pageSize }).ReadNext();
             finalList.Should().NotBeNull();
             finalList.Records.Count.Should().Be(0);
-
-            await DeleteAll(host);
-        }
-
-        [Fact]
-        public async Task GivenMultiLinkRecord_WhenPartialIdPaged_ShouldComplete()
-        {
-            TestWebsiteHost host = _testApplication.GetHost();
-            await DeleteAll(host);
-
-            int half = TestData.RandomNames.Count / 2;
-            IReadOnlyList<LinkRecord> records = TestData.RandomNames.Take(half)
-                .Zip(TestData.RandomNames.Skip(half), (name, site) => (name, site))
-                .Select(x => new LinkRecord
-                {
-                    Id = x.name,
-                    RedirectUrl = $"http://{x.site}/Document"
-                })
-                .ToArray();
-
-            foreach (var item in records)
-            {
-                await host.PathFinderClient.Link.Set(item);
-            }
-
-            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "Z" }).ReadNext();
-            list.Should().NotBeNull();
-            list.Records.Should().NotBeNull();
-            list.Records.Count.Should().Be(2);
-
-            list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "i" }).ReadNext();
-            list.Should().NotBeNull();
-            list.Records.Should().NotBeNull();
-            list.Records.Count.Should().Be(32);
-
-            list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "n" }).ReadNext();
-            list.Should().NotBeNull();
-            list.Records.Should().NotBeNull();
-            list.Records.Count.Should().Be(42);
-
-            await DeleteAll(host);
-        }
-
-
-        [Fact]
-        public async Task GivenMultiLinkRecord_WhenRedirectPaged_ShouldComplete()
-        {
-            TestWebsiteHost host = _testApplication.GetHost();
-            await DeleteAll(host);
-
-            int half = TestData.RandomNames.Count / 2;
-            IReadOnlyList<LinkRecord> records = TestData.RandomNames.Take(half)
-                .Zip(TestData.RandomNames.Skip(half), (name, site) => (name, site))
-                .Select((x, i) => new LinkRecord
-                {
-                    Id = x.name,
-                    RedirectUrl = $"http://{x.site}/Document",
-                    Owner = $"Owner_{i % 5}"
-                })
-                .ToArray();
-
-            foreach (var item in records)
-            {
-                await host.PathFinderClient.Link.Set(item);
-            }
-
-            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "Z" }).ReadNext();
-            list.Should().NotBeNull();
-            list.Records.Should().NotBeNull();
-            list.Records.Count.Should().Be(2);
-
-            list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "na" }).ReadNext();
-            list.Should().NotBeNull();
-            list.Records.Should().NotBeNull();
-            list.Records.Count.Should().Be(8);
-
-            list = await host.PathFinderClient.Link.List(new QueryParameters { RedirectUrl = "ee" }).ReadNext();
-            list.Should().NotBeNull();
-            list.Records.Should().NotBeNull();
-            list.Records.Count.Should().Be(5);
-
-            list = await host.PathFinderClient.Link.List(new QueryParameters { RedirectUrl = "sa" }).ReadNext();
-            list.Should().NotBeNull();
-            list.Records.Should().NotBeNull();
-            list.Records.Count.Should().Be(3);
-
-            list = await host.PathFinderClient.Link.List(new QueryParameters { Owner = "2" }).ReadNext();
-            list.Should().NotBeNull();
-            list.Records.Should().NotBeNull();
-            list.Records.Count.Should().Be(10);
-
-            list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "Z", RedirectUrl = "sa" }).ReadNext();
-            list.Should().NotBeNull();
-            list.Records.Should().NotBeNull();
-            list.Records.Count.Should().Be(5);
-
-            list = await host.PathFinderClient.Link.List(new QueryParameters { Id = "Z", RedirectUrl = "sa", Owner = "3" }).ReadNext();
-            list.Should().NotBeNull();
-            list.Records.Should().NotBeNull();
-            list.Records.Count.Should().Be(13);
-
-            await DeleteAll(host);
         }
 
         [Fact]
         public async Task GivenMultiLinkRecord_WhenPagedWithContinuationUrl_ShouldComplete()
         {
-            TestWebsiteHost host = _testApplication.GetHost();
-            await DeleteAll(host);
+            TestWebsiteHost host = await TestApplication.DefaultHost.GetHost();
+
+            const string testPrefix = "test03-";
+            await DeleteAll(host, testPrefix);
 
             const int max = 100;
             const int pageSize = 10;
@@ -251,7 +143,7 @@ namespace PathFinder.Server.Test
             IReadOnlyList<LinkRecord> records = Enumerable.Range(0, max)
                 .Select(x => new LinkRecord
                 {
-                    Id = $"lnk_{x}",
+                    Id = $"{testPrefix}lnk_{x}",
                     RedirectUrl = redirectUrl
                 })
                 .ToArray();
@@ -262,7 +154,7 @@ namespace PathFinder.Server.Test
             }
 
             var aggList = new List<LinkRecord>();
-            BatchSetCursor<LinkRecord> cursor = host.PathFinderClient.Link.List(new QueryParameters { Index = 0, Count = pageSize });
+            BatchSetCursor<LinkRecord> cursor = host.PathFinderClient.Link.List(new QueryParameters { Id = testPrefix, Index = 0, Count = pageSize });
 
             while (aggList.Count < max)
             {
@@ -283,17 +175,15 @@ namespace PathFinder.Server.Test
                 .Zip(aggList, (o, i) => (o, i))
                 .All(x => x.o == x.i)
                 .Should().BeTrue();
-
-            await DeleteAll(host);
         }
 
-        private async Task DeleteAll(TestWebsiteHost host)
+        private async Task DeleteAll(TestWebsiteHost host, string prefix)
         {
-            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(QueryParameters.Default).ReadNext();
+            BatchSet<LinkRecord> list = await host.PathFinderClient.Link.List(new QueryParameters { Id = prefix }).ReadNext();
 
             foreach (var item in list.Records)
             {
-                await host.PathFinderClient.Link.Delete(item.Id);
+                (await host.PathFinderClient.Link.Delete(item.Id)).Should().BeTrue(item.Id);
             }
         }
     }

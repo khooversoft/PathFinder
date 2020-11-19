@@ -20,15 +20,15 @@ namespace PathFinder.sdk.Records
             Enabled = linkRecord.Enabled;
         }
 
-        public bool Enabled { get; set; } = true;
-
         [JsonProperty("id")]
         public string Id { get; set; } = null!;
 
         public string RedirectUrl { get; set; } = null!;
 
-        public void Prepare()
+        public override void Prepare()
         {
+            base.Prepare();
+
             Id = Id
                 .VerifyNotEmpty(nameof(Id))
                 .ToLowerInvariant();
@@ -36,15 +36,14 @@ namespace PathFinder.sdk.Records
             RedirectUrl.VerifyNotEmpty(nameof(RedirectUrl));
         }
 
-        public override string ToString() => $"Id={Id}, RedirectUrl={RedirectUrl}, Enabled={Enabled}";
+        public override string ToString() => $"Id={Id}, RedirectUrl={RedirectUrl}";
 
         public override bool Equals(object? obj)
         {
             return obj is LinkRecord record &&
                    base.Equals(obj) &&
                    Id == record.Id &&
-                   RedirectUrl == record.RedirectUrl &&
-                   Enabled == record.Enabled;
+                   RedirectUrl == record.RedirectUrl;
         }
 
         public override int GetHashCode() => HashCode.Combine(base.GetHashCode(), Id, RedirectUrl, Enabled) ^ base.GetHashCode();

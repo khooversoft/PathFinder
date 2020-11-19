@@ -13,6 +13,10 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Toolbox.Tools;
+using Toolbox.Extensions;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace PathFinder.Server.Test.Application
 {
@@ -29,9 +33,9 @@ namespace PathFinder.Server.Test.Application
 
         public PathFinderClient PathFinderClient => new PathFinderClient(Client, Resolve<ILoggerFactory>().CreateLogger<PathFinderClient>());
 
-        public TestWebsiteHost StartApiServer(RunEnvironment runEnvironment)
+        public TestWebsiteHost StartApiServer(RunEnvironment runEnvironment, string? databaseName = null)
         {
-            IOption option = GetOption(runEnvironment);
+            IOption option = GetOption(runEnvironment, databaseName);
 
             var host = new HostBuilder()
                 .ConfigureWebHostDefaults(webBuilder =>
@@ -74,13 +78,18 @@ namespace PathFinder.Server.Test.Application
             }
         }
 
-        private IOption GetOption(RunEnvironment runEnvironment)
+        private IOption GetOption(RunEnvironment runEnvironment, string? databaseName)
         {
-            string packageFile = FileTools.WriteResourceToTempFile("PathFinder.Server.Test", nameof(TestWebsiteHost), typeof(TestWebsiteHost), GetResourceId());
-            string[] args = new[]
+            string tempFile = $"PathFinder.Server.Test.{runEnvironment}.{(databaseName ?? "default")}";
+            string packageFile = FileTools.WriteResourceToTempFile(tempFile, nameof(TestWebsiteHost), typeof(TestWebsiteHost), GetResourceId());
+
+            string[] args = new string?[]
             {
                 $"ConfigFile={packageFile}",
-            };
+                !databaseName.IsEmpty() ? $"Store:DatabaseName={databaseName}" : null,
+            }
+            .Where(x => x != null)
+            .ToArray()!;
 
             return new OptionBuilder()
                 .SetArgs(args)

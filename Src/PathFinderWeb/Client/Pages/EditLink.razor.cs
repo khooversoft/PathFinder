@@ -1,21 +1,14 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Web;
+using PathFinder.sdk.Models;
 using PathFinder.sdk.Records;
-using PathFinder.sdk.Services.RecordAbstract;
 using PathFinderWeb.Client.Application;
 using PathFinderWeb.Client.Application.Menu;
 using PathFinderWeb.Client.Components;
 using PathFinderWeb.Client.Services;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using System.Xml.Schema;
 using Toolbox.Extensions;
 using Toolbox.Tools;
 

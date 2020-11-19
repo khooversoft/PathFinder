@@ -18,7 +18,10 @@ namespace PathFinderCmd.Test.Application
             .GetManifestResourceStream(id)
             .VerifyNotNull($"{id} is not an assembly resource");
 
-        public static string[] GetArguments(this Stream configStream, params string[] args)
+        public static string[] GetArguments(string streamId, params string[] args) =>
+            GetArguments(GetOptionStream(streamId), args);
+
+        public static string[] GetArguments(Stream configStream, params string[] args)
         {
             IConfiguration config = new ConfigurationBuilder()
                 .AddJsonStream(configStream)
@@ -50,12 +53,6 @@ namespace PathFinderCmd.Test.Application
             }
 
             return argMap.ToArray();
-        }
-
-        public static string[] GetOptionArguments(this string id, params string[] args)
-        {
-            using Stream stream = GetOptionStream(id);
-            return stream.GetArguments(args);
         }
 
         public static string WriteResourceToTempFile<T>(string fileName, T value)
