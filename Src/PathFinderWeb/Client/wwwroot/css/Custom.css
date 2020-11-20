@@ -1,7 +1,8 @@
 ﻿.program-icon {
-    max-width: 32px;
+    max-width: 64px;
 }
 
+/*
 table {
     border-collapse: collapse;
     width: 100%;
@@ -28,6 +29,8 @@ td {
     font-size: 0.9rem;
     border: 0 !important;
 }
+    
+*/
 
 .page-title {
     font-weight: 600;
@@ -39,4 +42,3 @@ td {
     font-size: .7rem;
     font-weight: 500;
 }
-

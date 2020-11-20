@@ -17,16 +17,17 @@ using Toolbox.Tools;
 
 namespace PathFinderWeb.Client.Pages
 {
-    public partial class Link : ComponentBase
+    public partial class Metadata : ComponentBase
     {
         private readonly DelayAction _delayAction = new DelayAction(TimeSpan.FromMilliseconds(800));
         private readonly ActionBlock<Action> _actionQueue;
 
-        public Link()
+        public Metadata()
         {
             _actionQueue = new ActionBlock<Action>(async x =>
             {
                 x();
+                Context.Clear();
                 await GetLinks();
             });
         }
@@ -35,12 +36,12 @@ namespace PathFinderWeb.Client.Pages
         StateCacheService StateCacheService { get; set; } = null!;
 
         [Inject]
-        public LinkService LinkService { get; set; } = null!;
+        public MetadataService MetadataService { get; set; } = null!;
 
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
 
-        public RunContext<LinkRecord> Context { get; set; } = null!;
+        public RunContext<MetadataRecord> Context { get; set; } = null!;
 
         public MenuCollection MenuCollection { get; set; } = null!;
 
@@ -48,11 +49,11 @@ namespace PathFinderWeb.Client.Pages
         {
             base.OnParametersSet();
 
-            Context = StateCacheService.GetOrCreate(() => new RunContext<LinkRecord>());
+            Context = StateCacheService.GetOrCreate(() => new RunContext<MetadataRecord>());
 
             MenuCollection = new MenuCollection()
             {
-                new MenuItem("Create", NavigationHelper.Link.NewLinkPage(), IconHelper.Create, true),
+                new MenuItem("Create", NavigationHelper.Metadata.NewMetadataPage(), IconHelper.Create, true),
                 new MenuDivider(),
                 new MenuButton("Refresh", async () => await GetLinks(), IconHelper.Reload, true),
                 new MenuButton("Clear search", ResetSearch, IconHelper.Reset, true),
@@ -72,7 +73,6 @@ namespace PathFinderWeb.Client.Pages
             QueryParameters queryParameters = new QueryParameters
             {
                 Id = Context.SearchByIdUrl,
-                RedirectUrl = Context.SearchByIdUrl,
                 Tag = Context.SearchByTag,
                 Owner = Context.SearchByOwner,
             };
@@ -82,9 +82,11 @@ namespace PathFinderWeb.Client.Pages
                 Context.SetStartup();
                 StateHasChanged();
 
-                IReadOnlyList<LinkRecord> result = await LinkService.List(queryParameters);
-
-                Context.SetMessages(result);
+                if ((Context.Records?.Count ?? 0) == 0)
+                {
+                    IReadOnlyList<MetadataRecord> result = await MetadataService.List(queryParameters);
+                    Context.SetMessages(result);
+                }
             }
             catch
             {
@@ -96,11 +98,11 @@ namespace PathFinderWeb.Client.Pages
             }
         }
 
-        private void OnRowSelect(LinkRecord linkRecord)
+        private void OnRowSelect(MetadataRecord metadataRecord)
         {
-            linkRecord.VerifyNotNull(nameof(linkRecord));
+            metadataRecord.VerifyNotNull(nameof(metadataRecord));
 
-            NavigationManager.NavigateTo(NavigationHelper.Link.EditLinkPage(linkRecord.Id));
+            NavigationManager.NavigateTo(NavigationHelper.Metadata.EditMetadataPage(metadataRecord.Id));
         }
 
         private async Task ResetSearch()

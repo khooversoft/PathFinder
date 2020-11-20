@@ -1,10 +1,10 @@
-﻿@page "/link/edit"
-@page "/link/edit/{id}"
+﻿@page "/metadata/edit"
+@page "/metadata/edit/{id}"
 
 @using Toolbox.Extensions;
 @using PathFinderWeb.Client.Application;
 
-<PageHeader Header="Links" SubHeader="Manage link records" />
+<PageHeader Header="Metadata" SubHeader="Manage Metadata records" />
 
 <PageMenu MenuCollection="@MenuCollection" />
 
@@ -26,13 +26,6 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-md-2" for="url">Redirect URL:</label>
-                <div class="col-md-10">
-                    <InputText @bind-Value="FormData.RedirectUrl" type="text" class="form-control" id="url" placeholder="Enter the URL" @oninput="@(x => OnChangeRedirectUrl(x.Value.ToString()))" />
-                </div>
-            </div>
-
-            <div class="form-group row">
                 <label class="col-md-2" for="url">Enabled:</label>
                 <div class="col-md-10">
                     <InputCheckbox @bind-Value="FormData.Enabled" />
@@ -45,6 +38,33 @@
                 <label class="col-md-2" for="url">Owner:</label>
                 <div class="col-md-10">
                     <InputText @bind-Value="FormData.Owner" type="text" class="form-control" id="url" placeholder="Owner / contact" @oninput="@(x => OnChangeOwner(x.Value.ToString()))" />
+                </div>
+            </div>
+
+            <div class="form-group row mt-4">
+                <label class="col-md-2" for="property">Properties:</label>
+                <div class="col-md-10">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td>Name</td>
+                                <td>Value</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var line in FormData.Properties)
+                            {
+                                <tr>
+                                    <td style="border-width: 0px">
+                                        <InputText @bind-Value="line.Key" type="text" class="form-control" @oninput="@(x => { line.Key = x.Value.ToString(); VerifyExtraProperty(); })" />
+                                    </td>
+                                    <td style="border-width: 0px">
+                                        <InputText @bind-Value="line.Value" type="text" class="form-control" @oninput="@(x => { line.Value = x.Value.ToString(); VerifyExtraProperty(); })" />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -65,10 +85,10 @@
                             {
                                 <tr>
                                     <td style="border-width: 0px">
-                                        <InputText @bind-Value="line.Key" type="text" class="form-control" @oninput="@(x => { line.Key = x.Value.ToString(); VerifyExtra(); })" />
+                                        <InputText @bind-Value="line.Key" type="text" class="form-control" @oninput="@(x => { line.Key = x.Value.ToString(); VerifyExtraTag(); })" />
                                     </td>
                                     <td style="border-width: 0px">
-                                        <InputText @bind-Value="line.Value" type="text" class="form-control" @oninput="@(x => { line.Value = x.Value.ToString(); VerifyExtra(); })" />
+                                        <InputText @bind-Value="line.Value" type="text" class="form-control" @oninput="@(x => { line.Value = x.Value.ToString(); VerifyExtraTag(); })" />
                                     </td>
                                 </tr>
                             }
@@ -82,14 +102,14 @@
 </div>
 
 <Modal @ref="Modal">
-    <Title>Delete Link</Title>
+    <Title>Delete Metadata</Title>
     <Body>
         <p>
-            Do you want to delete <span class="font-weight-bold">@Id</span> link?
+            Do you want to delete <span class="font-weight-bold">@Id</span> metadata?
         </p>
 
         <div class="alert alert-warning" role="alert">
-            Warning, this will delete the link and is not recoverable without re-adding.
+            Warning, this will delete the metadata and is not recoverable without re-adding.
         </div>
 
     </Body>

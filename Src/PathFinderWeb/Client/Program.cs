@@ -3,8 +3,10 @@ using Microsoft.Extensions.DependencyInjection;
 using PathFinderWeb.Client.Services;
 using System;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Toolbox.Services;
+
+[assembly: InternalsVisibleTo("PathFinderWeb.Client.Test")]
 
 namespace PathFinderWeb.Client
 {
@@ -16,6 +18,7 @@ namespace PathFinderWeb.Client
 
             builder.Services.AddScoped<NavMenuService>();
             builder.Services.AddScoped<LinkService>();
+            builder.Services.AddScoped<MetadataService>();
             builder.Services.AddScoped<ClientContentService>();
             builder.Services.AddSingleton<StateCacheService>();
 

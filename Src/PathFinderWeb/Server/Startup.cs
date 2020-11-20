@@ -31,6 +31,7 @@ namespace PathFinderWeb.Server
 
             string url = Configuration[nameof(Option.PathFinderApiUrl)];
             services.AddHttpClient<LinkService>(client => client.BaseAddress = new Uri(url));
+            services.AddHttpClient<MetadataService>(client => client.BaseAddress = new Uri(url));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

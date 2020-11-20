@@ -17,7 +17,7 @@ a {
 
 .btn-link-icon {
     font-weight: 500;
-    color: White;
+    color: black;
 }
 
 a.btn-link-icon:hover {
@@ -48,7 +48,7 @@ app {
 }
 
 .top-row {
-    height: 3.5rem;
+    height: 4rem;
     display: flex;
     align-items: center;
 }
@@ -58,7 +58,8 @@ app {
 }
 
     .main .top-row {
-        background-color: #f7f7f7;
+        background-color: #ffffff;
+        /*background-color: #f7f7f7;*/
         border-bottom: 1px solid #d6d5d5;
         justify-content: flex-end;
     }
@@ -74,11 +75,13 @@ app {
         }
 
 .sidebar {
-    background-color: rgb(248, 249, 250);
+    background-color: #f5f5f5;
 }
 
     .sidebar .top-row {
-        background-color: rgb(17, 123, 171);
+        /*background-color: rgb(248, 249, 250);*/
+        /*background-color: rgb(17, 123, 171);*/
+        background-color: #ffffff;
         font-weight: 800;
     }
 

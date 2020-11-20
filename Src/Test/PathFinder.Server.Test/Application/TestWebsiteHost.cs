@@ -24,8 +24,12 @@ namespace PathFinder.Server.Test.Application
     {
         protected IHost? _host;
         protected HttpClient? _client;
+        private readonly ILogger<TestWebsiteHost> _logger;
 
-        public TestWebsiteHost() { }
+        public TestWebsiteHost(ILogger<TestWebsiteHost> logger)
+        {
+            _logger = logger;
+        }
 
         public HttpClient Client => _client ?? throw new ArgumentNullException(nameof(Client));
 
@@ -35,6 +39,8 @@ namespace PathFinder.Server.Test.Application
 
         public TestWebsiteHost StartApiServer(RunEnvironment runEnvironment, string? databaseName = null)
         {
+            _logger.LogInformation($"{nameof(StartApiServer)}: runEnvironment={runEnvironment}, databaseName={databaseName}");
+
             IOption option = GetOption(runEnvironment, databaseName);
 
             var host = new HostBuilder()
@@ -61,6 +67,8 @@ namespace PathFinder.Server.Test.Application
 
         public void Shutdown()
         {
+            _logger.LogInformation($"{nameof(Shutdown)} - Shutting down");
+
             Interlocked.Exchange(ref _client, null)?.Dispose();
 
             var host = Interlocked.Exchange(ref _host, null);

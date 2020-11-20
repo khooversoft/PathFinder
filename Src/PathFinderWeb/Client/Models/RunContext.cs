@@ -9,8 +9,6 @@ namespace PathFinderWeb.Client.Pages
     {
         public RunState RunState { get; private set; } = RunState.Startup;
 
-        public int? Count { get; private set; }
-
         public IReadOnlyList<T>? Records { get; private set; }
 
         public string? ErrorMessage { get; private set; }
@@ -23,11 +21,10 @@ namespace PathFinderWeb.Client.Pages
 
         public void SetStartup() => Clear();
 
-        public void SetMessages(int count, IEnumerable<T> records)
+        public void SetMessages(IEnumerable<T> records)
         {
             Clear();
             RunState = RunState.Result;
-            Count = count;
             Records = records.ToList();
         }
 
@@ -38,10 +35,9 @@ namespace PathFinderWeb.Client.Pages
             ErrorMessage = errorMessage;
         }
 
-        private void Clear()
+        public void Clear()
         {
             RunState = RunState.Startup;
-            Count = null;
             Records = null;
             ErrorMessage = null;
         }

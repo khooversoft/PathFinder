@@ -1,4 +1,5 @@
-﻿using PathFinder.sdk.Application;
+﻿using Microsoft.Extensions.Logging;
+using PathFinder.sdk.Application;
 using PathFinder.sdk.Models;
 using PathFinder.sdk.Records;
 using System.Threading;
@@ -10,11 +11,14 @@ namespace PathFinder.Server.Test.Application
     {
         private TestWebsiteHost? _currentHost;
         private readonly object _lock = new object();
+        private readonly ILoggerFactory _loggerFactory;
         private readonly RunEnvironment _runEnvironment;
         private readonly string? _databaseName;
 
-        public TestHost(RunEnvironment runEnvironment, string? databaseName = null)
+        public TestHost(ILoggerFactory loggerFactory, RunEnvironment runEnvironment, string? databaseName = null)
+            : base(loggerFactory.CreateLogger<TestHostState>())
         {
+            _loggerFactory = loggerFactory;
             _runEnvironment = runEnvironment;
             _databaseName = databaseName;
         }
@@ -23,7 +27,7 @@ namespace PathFinder.Server.Test.Application
         {
             lock (_lock)
             {
-                _currentHost ??= new TestWebsiteHost().StartApiServer(_runEnvironment, _databaseName);
+                _currentHost ??= new TestWebsiteHost(_loggerFactory.CreateLogger<TestWebsiteHost>()).StartApiServer(_runEnvironment, _databaseName);
             }
 
             await ExceuteQueuedState(this);

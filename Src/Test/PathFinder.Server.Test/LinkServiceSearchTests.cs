@@ -1,13 +1,10 @@
 ﻿using FluentAssertions;
-using PathFinder.sdk.Application;
+using Microsoft.Extensions.Logging;
 using PathFinder.sdk.Models;
 using PathFinder.sdk.Records;
 using PathFinder.Server.Test.Application;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -17,6 +14,10 @@ namespace PathFinder.Server.Test
     {
         public LinkServiceSearchTests()
         {
+            TestApplication.GetLoggerFactory()
+                .CreateLogger<LinkServiceSearchTests>()
+                .LogInformation("Constructor");
+
             TestApplication.SearchHost.EnqueueState(nameof(LinkServiceSearchTests), _ => CreateDataSet());
         }
 

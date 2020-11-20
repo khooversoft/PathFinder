@@ -14,10 +14,10 @@ using Toolbox.Tools;
 
 namespace PathFinderWeb.Client.Pages
 {
-    public partial class EditLink : ComponentBase, IDisposable
+    public partial class EditMetadata : ComponentBase, IDisposable
     {
         [Inject]
-        public LinkService LinkService { get; set; } = null!;
+        public MetadataService MetadataService { get; set; } = null!;
 
         [Inject]
         public NavigationManager NavigationManager { get; set; } = null!;
@@ -27,9 +27,9 @@ namespace PathFinderWeb.Client.Pages
 
         private MenuCollection? MenuCollection { get; set; }
 
-        private LinkRecord FormData { get; set; } = new LinkRecord();
+        private MetadataRecord FormData { get; set; } = new MetadataRecord();
 
-        private LinkRecord? CurrentFormData { get; set; }
+        private MetadataRecord? CurrentFormData { get; set; }
 
         private string? ErrorMessage { get; set; }
 
@@ -66,7 +66,7 @@ namespace PathFinderWeb.Client.Pages
                 new MenuDivider(),
                 !Id.IsEmpty() ? new MenuButton("Delete", async () => await ShowDeleteDialog(), IconHelper.Delete, true) : null,
                 !Id.IsEmpty() ? new MenuDivider() : null,
-                new MenuItem("Cancel", NavigationHelper.Link.LinkPage(), IconHelper.Cancel, true),
+                new MenuItem("Cancel", NavigationHelper.Metadata.MetadataPage(), IconHelper.Cancel, true),
             };
         }
 
@@ -77,13 +77,13 @@ namespace PathFinderWeb.Client.Pages
 
             try
             {
-                await LinkService.Set(new LinkRecord(FormData));
+                await MetadataService.Set(new MetadataRecord(FormData));
 
-                NavigationManager.NavigateTo(NavigationHelper.Link.LinkPage());
+                NavigationManager.NavigateTo(NavigationHelper.Metadata.MetadataPage());
             }
             catch
             {
-                ErrorMessage = $"Failed to save Link Id={FormData.Id}";
+                ErrorMessage = $"Failed to save Metadata Id={FormData.Id}";
                 StateHasChanged();
                 return;
             }
@@ -99,7 +99,7 @@ namespace PathFinderWeb.Client.Pages
         {
             if (Id.IsEmpty()) return;
 
-            await LinkService.Delete(Id!);
+            await MetadataService.Delete(Id!);
 
             NavigationManager.NavigateTo(NavigationHelper.Link.LinkPage());
         }
@@ -111,8 +111,8 @@ namespace PathFinderWeb.Client.Pages
 
             try
             {
-                FormData = await LinkService.Get(Id!);
-                CurrentFormData = new LinkRecord(FormData);
+                FormData = await MetadataService.Get(Id!);
+                CurrentFormData = new MetadataRecord(FormData);
 
                 FormData.Tags.Add(new KeyValue(string.Empty, string.Empty));
             }
@@ -126,27 +126,35 @@ namespace PathFinderWeb.Client.Pages
 
         private void OnChangeId(string value) => this.Action(x => FormData.Id = value).SetCanSave();
 
-        private void OnChangeRedirectUrl(string value) => this.Action(x => FormData.Id = value).SetCanSave();
-
         private void OnChangeOwner(string value) => this.Action(x => FormData.Id = value).SetCanSave();
 
         private void SetCanSave()
         {
             CanSave = !Id.IsEmpty() &&
-                !FormData.RedirectUrl.IsEmpty() &&
                 FormData != CurrentFormData;
 
             BuildMenu();
             StateHasChanged();
         }
 
-        private void VerifyExtra()
+        private void VerifyExtraTag()
         {
             var tagList = FormData.Tags.ToList();
 
             if (FormData.Tags.Any(x => x.Key.IsEmpty() || x.Value.IsEmpty())) return;
 
             FormData.Tags.Add(new KeyValue(string.Empty, string.Empty));
+
+            SetCanSave();
+        }
+
+        private void VerifyExtraProperty()
+        {
+            var tagList = FormData.Properties.ToList();
+
+            if (FormData.Properties.Any(x => x.Key.IsEmpty() || x.Value.IsEmpty())) return;
+
+            FormData.Properties.Add(new KeyValue(string.Empty, string.Empty));
 
             SetCanSave();
         }
