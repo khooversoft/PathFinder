@@ -21,7 +21,7 @@
             <div class="form-group row">
                 <label class="col-md-2" for="id">Id:</label>
                 <div class="col-md-10">
-                    <InputText @bind-Value="@FormData.Id" type="text" class="form-control" id="id" placeholder="Enter ID for link." disabled="@(!Id.IsEmpty())" @oninput="@(x => OnChangeId(x.Value.ToString()))" />
+                    <InputText @bind-Value="@FormData.Id" type="text" class="form-control" id="id" placeholder="Enter ID for link." disabled="@(!Id.IsEmpty())" @oninput="@(x => OnChangeId(x.Value?.ToString() ?? string.Empty))" />
                 </div>
             </div>
 
@@ -37,7 +37,7 @@
             <div class="form-group row">
                 <label class="col-md-2" for="url">Owner:</label>
                 <div class="col-md-10">
-                    <InputText @bind-Value="FormData.Owner" type="text" class="form-control" id="url" placeholder="Owner / contact" @oninput="@(x => OnChangeOwner(x.Value.ToString()))" />
+                    <InputText @bind-Value="FormData.Owner" type="text" class="form-control" id="url" placeholder="Owner / contact" @oninput="@(x => OnChangeOwner(x.Value?.ToString() ?? string.Empty))" />
                 </div>
             </div>
 
@@ -56,10 +56,10 @@
                             {
                                 <tr>
                                     <td style="border-width: 0px">
-                                        <InputText @bind-Value="line.Key" type="text" class="form-control" @oninput="@(x => { line.Key = x.Value.ToString(); VerifyExtraProperty(); })" />
+                                        <InputText @bind-Value="line.Key" type="text" class="form-control" @oninput="@(x => { line.Key = x.Value?.ToString() ?? string.Empty; VerifyExtraProperty(); })" />
                                     </td>
                                     <td style="border-width: 0px">
-                                        <InputText @bind-Value="line.Value" type="text" class="form-control" @oninput="@(x => { line.Value = x.Value.ToString(); VerifyExtraProperty(); })" />
+                                        <InputText @bind-Value="line.Value" type="text" class="form-control" @oninput="@(x => { line.Value = x.Value?.ToString() ?? string.Empty; VerifyExtraProperty(); })" />
                                     </td>
                                 </tr>
                             }
@@ -85,10 +85,10 @@
                             {
                                 <tr>
                                     <td style="border-width: 0px">
-                                        <InputText @bind-Value="line.Key" type="text" class="form-control" @oninput="@(x => { line.Key = x.Value.ToString(); VerifyExtraTag(); })" />
+                                        <InputText @bind-Value="line.Key" type="text" class="form-control" @oninput="@(x => { line.Key = x.Value?.ToString() ?? string.Empty; VerifyExtraTag(); })" />
                                     </td>
                                     <td style="border-width: 0px">
-                                        <InputText @bind-Value="line.Value" type="text" class="form-control" @oninput="@(x => { line.Value = x.Value.ToString(); VerifyExtraTag(); })" />
+                                        <InputText @bind-Value="line.Value" type="text" class="form-control" @oninput="@(x => { line.Value = x.Value?.ToString() ?? string.Empty; VerifyExtraTag(); })" />
                                     </td>
                                 </tr>
                             }

@@ -31,7 +31,7 @@ namespace Toolbox.Tools
             if (test) return;
             message = message ?? throw new ArgumentException(nameof(message));
 
-            throw (Exception)Activator.CreateInstance(typeof(T), message);
+            throw (Exception)Activator.CreateInstance(typeof(T), message)!;
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Toolbox.Tools
             if (test(subject)) return subject;
 
             getMessage.VerifyNotNull(nameof(getMessage));
-            throw (Exception)Activator.CreateInstance(typeof(T), getMessage(subject));
+            throw (Exception)Activator.CreateInstance(typeof(T), getMessage(subject))!;
         }
 
         /// <summary>

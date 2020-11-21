@@ -69,7 +69,7 @@ namespace PathFinderCmd.Test.Application
         public static string CreateTempFileName(string fileName)
         {
             string file = Path.Combine(Path.GetTempPath(), "PathFinderCmd.Test", Path.ChangeExtension(fileName, ".json"));
-            Directory.CreateDirectory(Path.GetDirectoryName(file));
+            Directory.CreateDirectory(Path.GetDirectoryName(file)!);
             return file;
         }
     }

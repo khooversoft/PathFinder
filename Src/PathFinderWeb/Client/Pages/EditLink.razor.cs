@@ -111,7 +111,7 @@ namespace PathFinderWeb.Client.Pages
 
             try
             {
-                FormData = await LinkService.Get(Id!);
+                FormData = (await LinkService.Get(Id!)) ?? throw new ArgumentException();
                 CurrentFormData = new LinkRecord(FormData);
 
                 FormData.Tags.Add(new KeyValue(string.Empty, string.Empty));

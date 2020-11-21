@@ -29,7 +29,7 @@ namespace Toolbox.Services
             Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
         };
 
-        public T Deserialize<T>(string subject) => JsonSerializer.Deserialize<T>(subject, JsonSerializerOptions);
+        public T? Deserialize<T>(string subject) => JsonSerializer.Deserialize<T>(subject, JsonSerializerOptions);
 
         public string Serialize<T>(T subject) => JsonSerializer.Serialize(subject, JsonSerializerOptions);
 

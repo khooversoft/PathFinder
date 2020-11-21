@@ -25,7 +25,7 @@ namespace PathFinderWeb.Client.Services
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task<MetadataRecord> Get(string id)
+        public async Task<MetadataRecord?> Get(string id)
         {
             id.VerifyNotEmpty(nameof(id));
 
@@ -37,7 +37,7 @@ namespace PathFinderWeb.Client.Services
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/metadata/list", queryParameters);
             response.EnsureSuccessStatusCode();
 
-            BatchSet<MetadataRecord> result = await response.Content.ReadFromJsonAsync<BatchSet<MetadataRecord>>();
+            BatchSet<MetadataRecord> result = (await response.Content.ReadFromJsonAsync<BatchSet<MetadataRecord>>()).VerifyNotNull("No response");
             return result.Records;
         }
 

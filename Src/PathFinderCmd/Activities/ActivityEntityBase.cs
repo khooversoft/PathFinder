@@ -41,7 +41,7 @@ namespace PathFinderCmd.Activities
             Record<T>? record = await _recordContainer.Get(_option.Id!, token: token);
             record.VerifyNotNull($"Cannot read {_option.Id} for {_entityName}");
 
-            File.WriteAllText(_option.File, _json.Serialize(record.Value));
+            File.WriteAllText(_option.File!, _json.Serialize(record.Value));
         }
 
         public async Task List(CancellationToken token)

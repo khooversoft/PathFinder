@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Toolbox.Tools;
 
 namespace PathFinderWeb.Client.Services
 {
@@ -21,11 +22,9 @@ namespace PathFinderWeb.Client.Services
 
         public async Task<string> GetDocHtml(string id)
         {
-            DocItem docItem;
+            if (_cache.TryGetValue(id, out DocItem? docItem)) return docItem.Html;
 
-            if (_cache.TryGetValue(id, out docItem)) return docItem.Html;
-
-            docItem = await _httpClient.GetFromJsonAsync<DocItem>($"api/config/doc/{id}");
+            docItem = (await _httpClient.GetFromJsonAsync<DocItem>($"api/config/doc/{id}")).VerifyNotNull("No content");
             _cache.TryAdd(id, docItem);
 
             return docItem.Html;

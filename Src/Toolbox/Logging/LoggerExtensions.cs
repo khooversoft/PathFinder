@@ -41,6 +41,7 @@ namespace Toolbox.Logging
         public static async Task LogTrace(this HttpResponseMessage subject, ILogger logger)
         {
             const string label = "httpResponse";
+            if (subject.RequestMessage == null) return;
 
             await subject.RequestMessage.LogTrace(logger);
 

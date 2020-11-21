@@ -19,7 +19,7 @@ namespace Toolbox.Actor.Host
             _logger = logger;
         }
 
-        public ActorRegistration? this[Type type] => _typeRegistry.TryGetValue(type, out ActorRegistration value) ? value : null;
+        public ActorRegistration? this[Type type] => _typeRegistry.TryGetValue(type, out ActorRegistration? value) ? value : null;
 
         public void Register(Type type, Func<IActor> createImplementation)
         {
@@ -72,7 +72,7 @@ namespace Toolbox.Actor.Host
 
         private ActorRegistration GetTypeRegistration(Type actorType)
         {
-            if (_typeRegistry.TryGetValue(actorType, out ActorRegistration typeRegistration))
+            if (_typeRegistry.TryGetValue(actorType, out ActorRegistration? typeRegistration))
             {
                 return typeRegistration;
             }

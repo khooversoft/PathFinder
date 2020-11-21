@@ -25,7 +25,7 @@ namespace PathFinderWeb.Client.Services
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task<LinkRecord> Get(string id)
+        public async Task<LinkRecord?> Get(string id)
         {
             id.VerifyNotEmpty(nameof(id));
 
@@ -37,7 +37,7 @@ namespace PathFinderWeb.Client.Services
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/link/list", queryParameters);
             response.EnsureSuccessStatusCode();
 
-            BatchSet<LinkRecord> result = await response.Content.ReadFromJsonAsync<BatchSet<LinkRecord>>();
+            BatchSet<LinkRecord> result = (await response.Content.ReadFromJsonAsync<BatchSet<LinkRecord>>()).VerifyNotNull("No response");
             return result.Records;
         }
 

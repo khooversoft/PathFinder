@@ -23,7 +23,7 @@ namespace Toolbox.Tools
             while (_queue.Count > _maxSize) _queue.TryDequeue(out T _);
         }
 
-        public bool TryDequeue(out T result) => _queue.TryDequeue(out result);
+        public bool TryDequeue(out T? result) => _queue.TryDequeue(out result);
 
         public IEnumerator<T> GetEnumerator() => _queue.ToList().GetEnumerator();
 

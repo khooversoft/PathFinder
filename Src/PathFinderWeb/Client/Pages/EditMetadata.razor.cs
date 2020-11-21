@@ -111,7 +111,7 @@ namespace PathFinderWeb.Client.Pages
 
             try
             {
-                FormData = await MetadataService.Get(Id!);
+                FormData = (await MetadataService.Get(Id!)) ?? throw new ArgumentException();
                 CurrentFormData = new MetadataRecord(FormData);
 
                 FormData.Tags.Add(new KeyValue(string.Empty, string.Empty));

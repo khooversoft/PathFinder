@@ -7,6 +7,7 @@ using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Toolbox.Extensions;
+using Toolbox.Tools;
 
 namespace PathFinder.sdk.Client
 {
@@ -60,7 +61,7 @@ namespace PathFinder.sdk.Client
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync($"api/{_containerName}/list", queryParameters);
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadFromJsonAsync<BatchSet<T>>();
+            return (await response.Content.ReadFromJsonAsync<BatchSet<T>>()).VerifyNotNull("No payload was returned");
         }
     }
 }

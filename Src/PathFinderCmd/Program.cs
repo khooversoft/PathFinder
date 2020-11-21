@@ -74,7 +74,7 @@ namespace PathFinderCmd
             {
                 IServiceProvider container = serviceProvider;
 
-                Console.CancelKeyPress += (object sender, ConsoleCancelEventArgs e) =>
+                Console.CancelKeyPress += (object? sender, ConsoleCancelEventArgs e) =>
                 {
                     e.Cancel = true;
                     cancellationTokenSource.Cancel();

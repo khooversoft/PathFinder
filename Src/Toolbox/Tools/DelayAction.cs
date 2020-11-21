@@ -23,7 +23,7 @@ namespace Toolbox.Tools
             _action = action;
         }
 
-        private void Send(object obj)
+        private void Send(object? obj)
         {
             try
             {

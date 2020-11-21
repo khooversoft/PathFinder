@@ -18,7 +18,7 @@ namespace Toolbox.Tools
 
             string filePath = Path.Combine(Path.GetTempPath(), folder, fileName);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
 
             using var stream = GetResourceStream(type, resourceId);
             WriteStreamToFile(stream, filePath);
